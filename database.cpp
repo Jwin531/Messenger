@@ -15,6 +15,28 @@ Database::~Database()
     db.close();
 }
 
+QByteArray generateSalt(int length = 16)
+{
+    QByteArray salt;
+    for (int i = 0; i < length; ++i) {
+        salt.append(QRandomGenerator::global()->generate() % 256);
+    }
+    return salt;
+}
+
+QByteArray hashPassword(const QString &password, const QByteArray &salt)
+{
+    QCryptographicHash hash(QCryptographicHash::Sha256);
+    hash.addData(salt);
+    hash.addData(password.toUtf8());
+    return hash.result();
+}
+
+bool verifyPassword(const QString &inputPassword, const QByteArray &storedSalt, const QByteArray &storedHash) {
+    QByteArray hashedInputPassword = hashPassword(inputPassword, storedSalt);
+    return hashedInputPassword == storedHash;
+}
+
 bool Database::connectToDatabase()
 {
     if (!db.open())
@@ -27,7 +49,8 @@ bool Database::connectToDatabase()
     QString authorization = R"(CREATE TABLE IF NOT EXISTS users_data (
                                 id SERIAL PRIMARY KEY,
                                 login VARCHAR(30) NOT NULL,
-                                password VARCHAR(255) NOT NULL
+                                password BYTEA NOT NULL,
+                                salt BYTEA NOT NULL
                              );)";
 
     if (!query.exec(authorization))
@@ -38,7 +61,7 @@ bool Database::connectToDatabase()
     return true;
 }
 
-bool Database::setUserData(const QString &username,const QString &password)
+bool Database::setUserData(const QString &username, const QString &password)
 {
     if (!db.isOpen() && !db.open()) {
         qDebug() << "База данных не открыта:" << db.lastError().text();
@@ -46,19 +69,22 @@ bool Database::setUserData(const QString &username,const QString &password)
     }
 
     QSqlQuery query(db);
-    query.prepare(R"(INSERT INTO users_data (login, password) VALUES (:login, :password))");
+    query.prepare(R"(INSERT INTO users_data (login, password, salt) VALUES (:login, :password, :salt))");
     query.bindValue(":login", username);
-    query.bindValue(":password", password);
+    QByteArray salt = generateSalt();
+    query.bindValue(":salt", salt); // Используем бинарный формат для соли
+    QByteArray hashedPassword = hashPassword(password, salt);
+    query.bindValue(":password", hashedPassword); // Используем бинарный формат для хэша
 
-    if(!query.exec())
-    {
+    if(!query.exec()) {
         qDebug() << "Не получилось сохранить данные пользователя в таблицу users_data:" << query.lastError().text();
         return false;
     }
     return true;
 }
 
-bool Database::getUserData(const QString &username, const QString &password)
+
+bool Database::getUserData(const QString &username, const QString &inputPassword)
 {
     if (!db.isOpen() && !db.open()) {
         qDebug() << "База данных не открыта:" << db.lastError().text();
@@ -66,25 +92,31 @@ bool Database::getUserData(const QString &username, const QString &password)
     }
 
     QSqlQuery query(db);
-    query.prepare(R"(SELECT password FROM users_data WHERE login = :login)");
+    query.prepare(R"(SELECT password, salt FROM users_data WHERE login = :login)");
     query.bindValue(":login", username);
 
+    // Выполняем запрос
     if (!query.exec()) {
-        qDebug() << "Не получилось выполнить запрос к таблице users_data:" << db.lastError().text();
+        qDebug() << "Ошибка запроса к базе данных:" << query.lastError().text();
         return false;
     }
 
+    // Проверяем, есть ли результат
     if (query.next()) {
-        QString storedPassword = query.value(0).toString();
+        QByteArray storedHash = query.value("password").toByteArray(); // Получаем хэш пароля как бинарные данные
+        QByteArray storedSalt = query.value("salt").toByteArray(); // Получаем соль как бинарные данные
 
-        if (storedPassword == password) {
+        // Проверяем пароль
+        if (verifyPassword(inputPassword, storedSalt, storedHash)) {
+            qDebug() << "Password is correct!";
             return true;
         } else {
-            qDebug() << "Пароли не совпадают";
+            qDebug() << "Password is incorrect!";
             return false;
         }
     } else {
-        qDebug() << "Пользователь не найден";
+        qDebug() << "User not found!";
         return false;
     }
 }
+

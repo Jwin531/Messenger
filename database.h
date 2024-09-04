@@ -6,6 +6,9 @@
 #include <QtSql/QSqlQuery>
 #include <QCoreApplication>
 #include <QDebug>
+#include <QRandomGenerator>
+#include <QCryptographicHash>
+#include <QByteArray>
 
 class Database
 {
