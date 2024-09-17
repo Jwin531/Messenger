@@ -74,6 +74,7 @@ public:
 
         passwordLineEdit = new QLineEdit(verticalLayoutWidget);
         passwordLineEdit->setObjectName("passwordLineEdit");
+        passwordLineEdit->setEchoMode(QLineEdit::Password);
 
         verticalLayout_3->addWidget(passwordLineEdit);
 
@@ -109,6 +110,7 @@ public:
         LoginDialog->setWindowTitle(QCoreApplication::translate("LoginDialog", "Dialog", nullptr));
         label->setText(QCoreApplication::translate("LoginDialog", "\320\233\320\276\320\263\320\270\320\275", nullptr));
         label_2->setText(QCoreApplication::translate("LoginDialog", "\320\237\320\260\321\200\320\276\320\273\321\214", nullptr));
+        loginLineEdit->setPlaceholderText(QString());
         loginButton->setText(QCoreApplication::translate("LoginDialog", "\320\222\320\276\320\271\321\202\320\270", nullptr));
         registerButton->setText(QCoreApplication::translate("LoginDialog", "\320\227\320\260\321\200\320\265\320\263\320\270\321\201\321\202\321\200\320\270\321\200\320\276\320\262\320\260\321\202\321\214\321\201\321\217", nullptr));
     } // retranslateUi

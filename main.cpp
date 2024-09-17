@@ -7,12 +7,18 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    Database db;
+    Database& db = Database::instance();  // Используем singleton экземпляр
     if (!db.connectToDatabase()) {
         return -1;
     }
 
     LoginDialog loginDialog;
+
+    QObject::connect(&loginDialog, &LoginDialog::loginSuccessful, [](const QString &username)
+    {
+        qDebug() << "Пользователь вошел в систему:" << username;
+    });
+
     if(loginDialog.exec() == QDialog::Accepted)
     {
         MainWindow w;
@@ -24,4 +30,5 @@ int main(int argc, char *argv[])
         return 0;
     }
 }
+
 

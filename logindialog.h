@@ -15,6 +15,9 @@ public:
     explicit LoginDialog(QWidget *parent = nullptr);
     ~LoginDialog();
 
+signals:
+    void loginSuccessful(const QString &username);
+
 private slots:
     void onRegisterClicked();
     void onLoginClicked();

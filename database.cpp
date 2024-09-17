@@ -15,6 +15,11 @@ Database::~Database()
     db.close();
 }
 
+Database& Database::instance() {
+    static Database instance;  // Статическая локальная переменная гарантирует, что она будет создана один раз
+    return instance;
+}
+
 QByteArray generateSalt(int length = 16)
 {
     QByteArray salt;
@@ -49,6 +54,7 @@ bool Database::connectToDatabase()
     QString authorization = R"(CREATE TABLE IF NOT EXISTS users_data (
                                 id SERIAL PRIMARY KEY,
                                 login VARCHAR(30) NOT NULL,
+                                status VARCHAR(10) NOT NULL DEFAULT 'offline',
                                 password BYTEA NOT NULL,
                                 salt BYTEA NOT NULL
                              );)";
@@ -118,5 +124,20 @@ bool Database::getUserData(const QString &username, const QString &inputPassword
         qDebug() << "User not found!";
         return false;
     }
+}
+
+bool Database::updateUserStatus(const QString& username,const QString status)
+{
+    QSqlQuery query(db);
+    query.prepare(R"(UPDATE users_data SET status = :status WHERE login = :login)");
+    query.bindValue(":login", username);
+    query.bindValue(":status",status);
+
+    if(!query.exec())
+    {
+        qDebug() << "Ошибка обновления статуса пользователя:"<< username << query.lastError().text();
+        return false;
+    }
+    return true;
 }
 

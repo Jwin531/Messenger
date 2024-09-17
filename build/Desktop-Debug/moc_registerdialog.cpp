@@ -26,24 +26,30 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 namespace {
 struct qt_meta_stringdata_RegisterDialog_t {
-    uint offsetsAndSizes[8];
+    uint offsetsAndSizes[12];
     char stringdata0[15];
-    char stringdata1[14];
+    char stringdata1[23];
     char stringdata2[1];
-    char stringdata3[22];
+    char stringdata3[9];
+    char stringdata4[14];
+    char stringdata5[22];
 };
 #define QT_MOC_LITERAL(ofs, len) \
     uint(sizeof(qt_meta_stringdata_RegisterDialog_t::offsetsAndSizes) + ofs), len 
 Q_CONSTINIT static const qt_meta_stringdata_RegisterDialog_t qt_meta_stringdata_RegisterDialog = {
     {
         QT_MOC_LITERAL(0, 14),  // "RegisterDialog"
-        QT_MOC_LITERAL(15, 13),  // "setToDatabase"
-        QT_MOC_LITERAL(29, 0),  // ""
-        QT_MOC_LITERAL(30, 21)   // "onSubmitButtonClicked"
+        QT_MOC_LITERAL(15, 22),  // "registrationSuccessful"
+        QT_MOC_LITERAL(38, 0),  // ""
+        QT_MOC_LITERAL(39, 8),  // "username"
+        QT_MOC_LITERAL(48, 13),  // "setToDatabase"
+        QT_MOC_LITERAL(62, 21)   // "onSubmitButtonClicked"
     },
     "RegisterDialog",
-    "setToDatabase",
+    "registrationSuccessful",
     "",
+    "username",
+    "setToDatabase",
     "onSubmitButtonClicked"
 };
 #undef QT_MOC_LITERAL
@@ -55,16 +61,22 @@ Q_CONSTINIT static const uint qt_meta_data_RegisterDialog[] = {
       10,       // revision
        0,       // classname
        0,    0, // classinfo
-       2,   14, // methods
+       3,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       0,       // signalCount
+       1,       // signalCount
+
+ // signals: name, argc, parameters, tag, flags, initial metatype offsets
+       1,    1,   32,    2, 0x06,    1 /* Public */,
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,   26,    2, 0x0a,    1 /* Public */,
-       3,    0,   27,    2, 0x0a,    2 /* Public */,
+       4,    0,   35,    2, 0x0a,    3 /* Public */,
+       5,    0,   36,    2, 0x0a,    4 /* Public */,
+
+ // signals: parameters
+    QMetaType::Void, QMetaType::QString,    3,
 
  // slots: parameters
     QMetaType::Void,
@@ -82,6 +94,9 @@ Q_CONSTINIT const QMetaObject RegisterDialog::staticMetaObject = { {
     qt_incomplete_metaTypeArray<qt_meta_stringdata_RegisterDialog_t,
         // Q_OBJECT / Q_GADGET
         QtPrivate::TypeAndForceComplete<RegisterDialog, std::true_type>,
+        // method 'registrationSuccessful'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
         // method 'setToDatabase'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'onSubmitButtonClicked'
@@ -96,12 +111,21 @@ void RegisterDialog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         auto *_t = static_cast<RegisterDialog *>(_o);
         (void)_t;
         switch (_id) {
-        case 0: _t->setToDatabase(); break;
-        case 1: _t->onSubmitButtonClicked(); break;
+        case 0: _t->registrationSuccessful((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
+        case 1: _t->setToDatabase(); break;
+        case 2: _t->onSubmitButtonClicked(); break;
         default: ;
         }
+    } else if (_c == QMetaObject::IndexOfMethod) {
+        int *result = reinterpret_cast<int *>(_a[0]);
+        {
+            using _t = void (RegisterDialog::*)(const QString & );
+            if (_t _q_method = &RegisterDialog::registrationSuccessful; *reinterpret_cast<_t *>(_a[1]) == _q_method) {
+                *result = 0;
+                return;
+            }
+        }
     }
-    (void)_a;
 }
 
 const QMetaObject *RegisterDialog::metaObject() const
@@ -123,15 +147,22 @@ int RegisterDialog::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 2)
+        if (_id < 3)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 2;
+        _id -= 3;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 2)
+        if (_id < 3)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 2;
+        _id -= 3;
     }
     return _id;
+}
+
+// SIGNAL 0
+void RegisterDialog::registrationSuccessful(const QString & _t1)
+{
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
+    QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 QT_WARNING_POP
 QT_END_MOC_NAMESPACE

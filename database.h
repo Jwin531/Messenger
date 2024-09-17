@@ -13,12 +13,19 @@
 class Database
 {
 public:
-    Database();
+    static Database& instance();  // Метод для получения единственного экземпляра
     ~Database();
+
     bool connectToDatabase();
-    bool getUserData(const QString &username,const QString &password);
+    bool getUserData(const QString &username, const QString &password);
     bool setUserData(const QString &username, const QString &password);
+    bool updateUserStatus(const QString &username, const QString status);
+
 private:
+    Database();  // Конструктор в private для предотвращения создания экземпляров
+    Database(const Database&) = delete;  // Запрещаем копирование
+    void operator=(const Database&) = delete;  // Запрещаем присваивание
+
     QSqlDatabase db;
 };
 

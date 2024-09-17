@@ -56,17 +56,23 @@ SOURCES       = ../../database.cpp \
 		../../logindialog.cpp \
 		../../main.cpp \
 		../../mainwindow.cpp \
-		../../registerdialog.cpp moc_logindialog.cpp \
+		../../registerdialog.cpp \
+		../../server.cpp \
+		../../serverthread.cpp moc_logindialog.cpp \
 		moc_mainwindow.cpp \
-		moc_registerdialog.cpp
+		moc_registerdialog.cpp \
+		moc_serverthread.cpp
 OBJECTS       = database.o \
 		logindialog.o \
 		main.o \
 		mainwindow.o \
 		registerdialog.o \
+		server.o \
+		serverthread.o \
 		moc_logindialog.o \
 		moc_mainwindow.o \
-		moc_registerdialog.o
+		moc_registerdialog.o \
+		moc_serverthread.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt6/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt6/mkspecs/common/linux.conf \
@@ -135,11 +141,15 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/spec_pre.prf \
 		../../../../Messenger.pro ../../database.h \
 		../../logindialog.h \
 		../../mainwindow.h \
-		../../registerdialog.h ../../database.cpp \
+		../../registerdialog.h \
+		../../server.h \
+		../../serverthread.h ../../database.cpp \
 		../../logindialog.cpp \
 		../../main.cpp \
 		../../mainwindow.cpp \
-		../../registerdialog.cpp
+		../../registerdialog.cpp \
+		../../server.cpp \
+		../../serverthread.cpp
 QMAKE_TARGET  = Messenger
 DESTDIR       = 
 TARGET        = Messenger
@@ -307,8 +317,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../../database.h ../../logindialog.h ../../mainwindow.h ../../registerdialog.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../../database.cpp ../../logindialog.cpp ../../main.cpp ../../mainwindow.cpp ../../registerdialog.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../../database.h ../../logindialog.h ../../mainwindow.h ../../registerdialog.h ../../server.h ../../serverthread.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../../database.cpp ../../logindialog.cpp ../../main.cpp ../../mainwindow.cpp ../../registerdialog.cpp ../../server.cpp ../../serverthread.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../../logindialog.ui ../../mainwindow.ui ../../registerdialog.ui $(DISTDIR)/
 
 
@@ -341,15 +351,17 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/data/dummy.cpp
 	clang++ -pipe -g -g -std=gnu++1z -Wall -Wextra -fPIC -dM -E -o moc_predefs.h /usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_logindialog.cpp moc_mainwindow.cpp moc_registerdialog.cpp
+compiler_moc_header_make_all: moc_logindialog.cpp moc_mainwindow.cpp moc_registerdialog.cpp moc_serverthread.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_logindialog.cpp moc_mainwindow.cpp moc_registerdialog.cpp
+	-$(DEL_FILE) moc_logindialog.cpp moc_mainwindow.cpp moc_registerdialog.cpp moc_serverthread.cpp
 moc_logindialog.cpp: ../../logindialog.h \
 		moc_predefs.h \
 		/usr/lib/qt6/libexec/moc
 	/usr/lib/qt6/libexec/moc $(DEFINES) --include '/home/jwin/Рабочий стол/qt/Messenger/build/Desktop-Debug/moc_predefs.h' -I/usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-clang -I'/home/jwin/Рабочий стол/qt/Messenger' -I/usr/include -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtWidgets -I/usr/include/x86_64-linux-gnu/qt6/QtGui -I/usr/include/x86_64-linux-gnu/qt6/QtSql -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I. -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/llvm-18/lib/clang/18/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../logindialog.h -o moc_logindialog.cpp
 
 moc_mainwindow.cpp: ../../mainwindow.h \
+		../../serverthread.h \
+		../../server.h \
 		moc_predefs.h \
 		/usr/lib/qt6/libexec/moc
 	/usr/lib/qt6/libexec/moc $(DEFINES) --include '/home/jwin/Рабочий стол/qt/Messenger/build/Desktop-Debug/moc_predefs.h' -I/usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-clang -I'/home/jwin/Рабочий стол/qt/Messenger' -I/usr/include -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtWidgets -I/usr/include/x86_64-linux-gnu/qt6/QtGui -I/usr/include/x86_64-linux-gnu/qt6/QtSql -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I. -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/llvm-18/lib/clang/18/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../mainwindow.h -o moc_mainwindow.cpp
@@ -358,6 +370,12 @@ moc_registerdialog.cpp: ../../registerdialog.h \
 		moc_predefs.h \
 		/usr/lib/qt6/libexec/moc
 	/usr/lib/qt6/libexec/moc $(DEFINES) --include '/home/jwin/Рабочий стол/qt/Messenger/build/Desktop-Debug/moc_predefs.h' -I/usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-clang -I'/home/jwin/Рабочий стол/qt/Messenger' -I/usr/include -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtWidgets -I/usr/include/x86_64-linux-gnu/qt6/QtGui -I/usr/include/x86_64-linux-gnu/qt6/QtSql -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I. -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/llvm-18/lib/clang/18/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../registerdialog.h -o moc_registerdialog.cpp
+
+moc_serverthread.cpp: ../../serverthread.h \
+		../../server.h \
+		moc_predefs.h \
+		/usr/lib/qt6/libexec/moc
+	/usr/lib/qt6/libexec/moc $(DEFINES) --include '/home/jwin/Рабочий стол/qt/Messenger/build/Desktop-Debug/moc_predefs.h' -I/usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-clang -I'/home/jwin/Рабочий стол/qt/Messenger' -I/usr/include -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtWidgets -I/usr/include/x86_64-linux-gnu/qt6/QtGui -I/usr/include/x86_64-linux-gnu/qt6/QtSql -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I. -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/llvm-18/lib/clang/18/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../serverthread.h -o moc_serverthread.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -398,11 +416,15 @@ logindialog.o: ../../logindialog.cpp ../../logindialog.h \
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o logindialog.o ../../logindialog.cpp
 
 main.o: ../../main.cpp ../../mainwindow.h \
+		../../serverthread.h \
+		../../server.h \
 		../../logindialog.h \
 		../../database.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../../main.cpp
 
 mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
+		../../serverthread.h \
+		../../server.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../../mainwindow.cpp
 
@@ -410,6 +432,13 @@ registerdialog.o: ../../registerdialog.cpp ../../registerdialog.h \
 		ui_registerdialog.h \
 		../../database.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o registerdialog.o ../../registerdialog.cpp
+
+server.o: ../../server.cpp ../../server.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o server.o ../../server.cpp
+
+serverthread.o: ../../serverthread.cpp ../../serverthread.h \
+		../../server.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o serverthread.o ../../serverthread.cpp
 
 moc_logindialog.o: moc_logindialog.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_logindialog.o moc_logindialog.cpp
@@ -419,6 +448,9 @@ moc_mainwindow.o: moc_mainwindow.cpp
 
 moc_registerdialog.o: moc_registerdialog.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_registerdialog.o moc_registerdialog.cpp
+
+moc_serverthread.o: moc_serverthread.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_serverthread.o moc_serverthread.cpp
 
 ####### Install
 

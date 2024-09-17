@@ -69,6 +69,8 @@ public:
 
         textWith = new QTextEdit(horizontalLayoutWidget);
         textWith->setObjectName("textWith");
+        textWith->setEnabled(true);
+        textWith->setTextInteractionFlags(Qt::TextSelectableByMouse);
 
         verticalLayout->addWidget(textWith);
 
@@ -113,8 +115,8 @@ public:
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
         label->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
-        sendMessage->setText(QCoreApplication::translate("MainWindow", "PushButton", nullptr));
-        SendVoiceMessage->setText(QCoreApplication::translate("MainWindow", "PushButton", nullptr));
+        sendMessage->setText(QCoreApplication::translate("MainWindow", "SendMessage", nullptr));
+        SendVoiceMessage->setText(QCoreApplication::translate("MainWindow", "SendVoiceMessage", nullptr));
     } // retranslateUi
 
 };

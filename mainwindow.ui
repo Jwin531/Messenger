@@ -37,7 +37,14 @@
         </widget>
        </item>
        <item>
-        <widget class="QTextEdit" name="textWith"/>
+        <widget class="QTextEdit" name="textWith">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="textInteractionFlags">
+          <set>Qt::TextSelectableByMouse</set>
+         </property>
+        </widget>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -47,14 +54,14 @@
          <item>
           <widget class="QPushButton" name="sendMessage">
            <property name="text">
-            <string>PushButton</string>
+            <string>SendMessage</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="SendVoiceMessage">
            <property name="text">
-            <string>PushButton</string>
+            <string>SendVoiceMessage</string>
            </property>
           </widget>
          </item>

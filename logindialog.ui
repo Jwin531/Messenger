@@ -46,10 +46,18 @@
       <item>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
-         <widget class="QLineEdit" name="loginLineEdit"/>
+         <widget class="QLineEdit" name="loginLineEdit">
+          <property name="placeholderText">
+           <string/>
+          </property>
+         </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="passwordLineEdit"/>
+         <widget class="QLineEdit" name="passwordLineEdit">
+          <property name="echoMode">
+           <enum>QLineEdit::Password</enum>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>

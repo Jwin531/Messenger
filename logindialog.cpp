@@ -27,22 +27,25 @@ void LoginDialog::onRegisterClicked()
 
 void LoginDialog::onLoginClicked()
 {
-    Database db;
+    Database& db = Database::instance();
     QString login = ui->loginLineEdit->text();
     QString password = ui->passwordLineEdit->text();
 
     if(login.isEmpty() || password.isEmpty())
     {
         QMessageBox::warning(this,"Ошибка","Заполните все поля");
+        return;
     }
 
     if(db.getUserData(login,password))
     {
+        emit loginSuccessful(login);
+        db.updateUserStatus(login,"online");
         accept();
     }
     else
     {
         QMessageBox::critical(this, "Ошибка", "Не удалось войти в систему");
     }
-
 }
+

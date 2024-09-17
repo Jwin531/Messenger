@@ -19,13 +19,17 @@ SOURCES += \
     logindialog.cpp \
     main.cpp \
     mainwindow.cpp \
-    registerdialog.cpp
+    registerdialog.cpp \
+    server.cpp \
+    serverthread.cpp
 
 HEADERS += \
     database.h \
     logindialog.h \
     mainwindow.h \
-    registerdialog.h
+    registerdialog.h \
+    server.h \
+    serverthread.h
 
 FORMS += \
     logindialog.ui \
@@ -39,3 +43,6 @@ LIBS += -L/usr/lib -lboost_system -lboost_filesystem
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    .gitignore

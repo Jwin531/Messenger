@@ -104,7 +104,7 @@ public:
         label->setText(QCoreApplication::translate("RegisterDialog", "\320\222\320\262\320\265\320\264\320\270\321\202\320\265 \320\273\320\276\320\263\320\270\320\275 \320\270 \320\277\320\260\321\200\320\276\320\273\321\214 \320\264\320\273\321\217 \321\200\320\265\320\263\320\270\321\201\321\202\321\200\320\260\321\206\320\270\320\270 \320\260\320\272\320\272\320\260\321\203\320\275\321\202\320\260", nullptr));
         label_2->setText(QCoreApplication::translate("RegisterDialog", "\320\233\320\276\320\263\320\270\320\275", nullptr));
         label_3->setText(QCoreApplication::translate("RegisterDialog", "\320\237\320\260\321\200\320\276\320\273\321\214", nullptr));
-        submitButton->setText(QCoreApplication::translate("RegisterDialog", "PushButton", nullptr));
+        submitButton->setText(QCoreApplication::translate("RegisterDialog", "\320\227\320\260\321\200\320\265\320\263\320\270\321\201\321\202\321\200\320\270\321\200\320\276\320\262\320\260\321\202\321\214\321\201\321\217", nullptr));
     } // retranslateUi
 
 };

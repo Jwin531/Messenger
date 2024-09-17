@@ -8,13 +8,12 @@ RegisterDialog::RegisterDialog(QWidget *parent)
     , ui(new Ui::RegisterDialog)
 {
     ui->setupUi(this);
-
     connect(ui->submitButton, &QPushButton::clicked, this, &RegisterDialog::onSubmitButtonClicked);
 }
 
 void RegisterDialog::setToDatabase()
 {
-    Database db;
+    Database& db = Database::instance();
     QString username = ui->loginLineEdit->text();
     QString password = ui->passwordLineEdit->text();
 
@@ -27,13 +26,13 @@ void RegisterDialog::setToDatabase()
     if(db.setUserData(username,password))
     {
         QMessageBox::information(this,"Успешная регистрация","Вы успешно зарегистрированы");
+        emit registrationSuccessful(username);
         accept();
     }
     else
     {
         QMessageBox::critical(this, "Ошибка", "Не удалось сохранить данные пользователя");
     }
-
 }
 
 void RegisterDialog::onSubmitButtonClicked()

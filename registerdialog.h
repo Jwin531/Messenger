@@ -14,6 +14,10 @@ class RegisterDialog : public QDialog
 public:
     explicit RegisterDialog(QWidget *parent = nullptr);
     ~RegisterDialog();
+
+signals:
+    void registrationSuccessful(const QString &username);
+
 public slots:
     void setToDatabase();
     void onSubmitButtonClicked();
