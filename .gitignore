@@ -1,0 +1,27 @@
+# Игнорировать файлы сборки
+/build/
+/release/
+/debug/
+/debug_shared/
+/release_shared/
+
+# Игнорировать временные файлы
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dll
+
+# Игнорировать файлы системы
+*.log
+*.tmp
+*.swp
+*.swo
+.DS_Store
+
+# Игнорировать файлы среды Qt Creator
+*.pro.user
+*.pro.user.*
+*.qmake.stash
+*.qmake.cache
