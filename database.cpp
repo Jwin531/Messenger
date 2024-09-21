@@ -57,11 +57,24 @@ bool Database::connectToDatabase()
                                 status VARCHAR(10) NOT NULL DEFAULT 'offline',
                                 password BYTEA NOT NULL,
                                 salt BYTEA NOT NULL
-                             );)";
+                            );)";
+
+    QString chatMesseges = R"(CREATE TABLE IF NOT EXISTS chat_messages(
+                                id SERIAL PRIMARY KEY,
+                                username VARCHAR(255),
+                                message TEXT,
+                                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                            );)";
 
     if (!query.exec(authorization))
     {
         qDebug() << "Ошибка создания таблицы users_data:" << query.lastError().text();
+        return false;
+    }
+
+    if(!query.exec(chatMesseges))
+    {
+        qDebug() << "Ошибка создания таблицы chat_messages:" << query.lastError().text();
         return false;
     }
     return true;
@@ -136,6 +149,21 @@ bool Database::updateUserStatus(const QString& username,const QString status)
     if(!query.exec())
     {
         qDebug() << "Ошибка обновления статуса пользователя:"<< username << query.lastError().text();
+        return false;
+    }
+    return true;
+}
+
+bool Database::saveMessage(const QString &username, const QString& message)
+{
+    QSqlQuery query(db);
+    query.prepare(R"(INSERT INTO chat_messages (username,message) VALUES(:username,:message))");
+    query.bindValue(":username",username);
+    query.bindValue(":message",message);
+
+    if(!query.exec())
+    {
+        qDebug() << "Ошибка при сохранении сообщения:" << query.lastError();
         return false;
     }
     return true;

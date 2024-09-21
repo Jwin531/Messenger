@@ -2,6 +2,8 @@
 #include "logindialog.h"
 #include "database.h"
 #include <QApplication>
+#include <thread>
+#include "Server.h"
 
 int main(int argc, char *argv[])
 {
@@ -14,8 +16,7 @@ int main(int argc, char *argv[])
 
     LoginDialog loginDialog;
 
-    QObject::connect(&loginDialog, &LoginDialog::loginSuccessful, [](const QString &username)
-    {
+    QObject::connect(&loginDialog, &LoginDialog::loginSuccessful, [](const QString &username) {
         qDebug() << "Пользователь вошел в систему:" << username;
     });
 
@@ -30,5 +31,3 @@ int main(int argc, char *argv[])
         return 0;
     }
 }
-
-

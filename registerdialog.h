@@ -7,22 +7,22 @@ namespace Ui {
 class RegisterDialog;
 }
 
-class RegisterDialog : public QDialog
-{
+class RegisterDialog : public QDialog {
     Q_OBJECT
 
 public:
     explicit RegisterDialog(QWidget *parent = nullptr);
-    ~RegisterDialog();
+    ~RegisterDialog() override;
 
 signals:
     void registrationSuccessful(const QString &username);
 
-public slots:
-    void setToDatabase();
+private slots:
     void onSubmitButtonClicked();
 
 private:
+    void setToDatabase();
+
     Ui::RegisterDialog *ui;
 };
 

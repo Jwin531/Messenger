@@ -31,8 +31,8 @@ struct qt_meta_stringdata_LoginDialog_t {
     char stringdata1[16];
     char stringdata2[1];
     char stringdata3[9];
-    char stringdata4[18];
-    char stringdata5[15];
+    char stringdata4[15];
+    char stringdata5[18];
 };
 #define QT_MOC_LITERAL(ofs, len) \
     uint(sizeof(qt_meta_stringdata_LoginDialog_t::offsetsAndSizes) + ofs), len 
@@ -42,15 +42,15 @@ Q_CONSTINIT static const qt_meta_stringdata_LoginDialog_t qt_meta_stringdata_Log
         QT_MOC_LITERAL(12, 15),  // "loginSuccessful"
         QT_MOC_LITERAL(28, 0),  // ""
         QT_MOC_LITERAL(29, 8),  // "username"
-        QT_MOC_LITERAL(38, 17),  // "onRegisterClicked"
-        QT_MOC_LITERAL(56, 14)   // "onLoginClicked"
+        QT_MOC_LITERAL(38, 14),  // "onLoginClicked"
+        QT_MOC_LITERAL(53, 17)   // "onRegisterClicked"
     },
     "LoginDialog",
     "loginSuccessful",
     "",
     "username",
-    "onRegisterClicked",
-    "onLoginClicked"
+    "onLoginClicked",
+    "onRegisterClicked"
 };
 #undef QT_MOC_LITERAL
 } // unnamed namespace
@@ -97,9 +97,9 @@ Q_CONSTINIT const QMetaObject LoginDialog::staticMetaObject = { {
         // method 'loginSuccessful'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
-        // method 'onRegisterClicked'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'onLoginClicked'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'onRegisterClicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>
     >,
     nullptr
@@ -112,8 +112,8 @@ void LoginDialog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         (void)_t;
         switch (_id) {
         case 0: _t->loginSuccessful((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
-        case 1: _t->onRegisterClicked(); break;
-        case 2: _t->onLoginClicked(); break;
+        case 1: _t->onLoginClicked(); break;
+        case 2: _t->onRegisterClicked(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {

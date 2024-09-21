@@ -20,6 +20,7 @@ public:
     bool getUserData(const QString &username, const QString &password);
     bool setUserData(const QString &username, const QString &password);
     bool updateUserStatus(const QString &username, const QString status);
+    bool saveMessage(const QString &username, const QString& message);
 
 private:
     Database();  // Конструктор в private для предотвращения создания экземпляров

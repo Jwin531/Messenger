@@ -1,25 +1,16 @@
-#ifndef SERVERTHREAD_H
-#define SERVERTHREAD_H
+// // serverthread.h
+// #include <boost/asio.hpp>
+// #include "server.h" // Ваш код сервера
 
-#include <QThread>
-#include <boost/asio/io_context.hpp>
-#include <boost/asio/signal_set.hpp>
-#include "server.h"  // Подключите ваш файл с определением ChatServer и ChatSession
+// class ServerThread : public QThread {
+//     Q_OBJECT
 
-class ServerThread : public QThread {
-    Q_OBJECT
+// public:
+//     explicit ServerThread(QObject *parent = nullptr);
+//     void run() override;
+//     void stopServer();
 
-public:
-    ServerThread();
-    ~ServerThread();
-
-protected:
-    void run() override;
-
-private:
-    boost::asio::io_context io_context_;
-    boost::asio::signal_set signals_;
-    ChatServer server_;
-};
-
-#endif // SERVERTHREAD_H
+// private:
+//     boost::asio::io_context io_context;
+//     std::unique_ptr<Server> server;
+// };

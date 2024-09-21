@@ -14,10 +14,10 @@ EQ            = =
 
 CC            = clang
 CXX           = clang++
-DEFINES       = -DQT_QML_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_SQL_LIB -DQT_CORE_LIB
+DEFINES       = -DQT_QML_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_SQL_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -g -Wall -Wextra -fPIC -D_REENTRANT $(DEFINES)
 CXXFLAGS      = -pipe -g -g -std=gnu++1z -Wall -Wextra -fPIC -D_REENTRANT $(DEFINES)
-INCPATH       = -I../../../Messenger -I. -I/usr/include -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtWidgets -I/usr/include/x86_64-linux-gnu/qt6/QtGui -I/usr/include/x86_64-linux-gnu/qt6/QtSql -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I. -I. -I/usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-clang
+INCPATH       = -I../../../Messenger -I. -I/usr/include -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtWidgets -I/usr/include/x86_64-linux-gnu/qt6/QtGui -I/usr/include/x86_64-linux-gnu/qt6/QtSql -I/usr/include/x86_64-linux-gnu/qt6/QtNetwork -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I. -I. -I/usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-clang
 QMAKE         = /usr/bin/qmake6
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -40,7 +40,7 @@ DISTNAME      = Messenger1.0.0
 DISTDIR = /home/jwin/Рабочий\ стол/qt/Messenger/build/Desktop-Debug/.tmp/Messenger1.0.0
 LINK          = clang++
 LFLAGS        = -ccc-gcc-name g++ -Wl,-rpath-link,/usr/lib/x86_64-linux-gnu
-LIBS          = $(SUBLIBS) -L/usr/lib -lboost_system -lboost_filesystem /usr/lib/x86_64-linux-gnu/libQt6Widgets.so /usr/lib/x86_64-linux-gnu/libQt6Gui.so /usr/lib/x86_64-linux-gnu/libGLX.so /usr/lib/x86_64-linux-gnu/libOpenGL.so /usr/lib/x86_64-linux-gnu/libQt6Sql.so /usr/lib/x86_64-linux-gnu/libQt6Core.so -lpthread -lGLX -lOpenGL   
+LIBS          = $(SUBLIBS) -L/usr/lib -lboost_system -lboost_filesystem /usr/lib/x86_64-linux-gnu/libQt6Widgets.so /usr/lib/x86_64-linux-gnu/libQt6Gui.so /usr/lib/x86_64-linux-gnu/libGLX.so /usr/lib/x86_64-linux-gnu/libOpenGL.so /usr/lib/x86_64-linux-gnu/libQt6Sql.so /usr/lib/x86_64-linux-gnu/libQt6Network.so /usr/lib/x86_64-linux-gnu/libQt6Core.so -lpthread -lGLX -lOpenGL   
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -52,28 +52,27 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = ../../database.cpp \
+SOURCES       = ../../client.cpp \
+		../../database.cpp \
 		../../logindialog.cpp \
 		../../main.cpp \
 		../../mainwindow.cpp \
-		../../registerdialog.cpp \
-		../../server.cpp \
-		../../serverthread.cpp moc_logindialog.cpp \
+		../../registerdialog.cpp moc_client.cpp \
+		moc_logindialog.cpp \
 		moc_mainwindow.cpp \
-		moc_registerdialog.cpp \
-		moc_serverthread.cpp
-OBJECTS       = database.o \
+		moc_registerdialog.cpp
+OBJECTS       = client.o \
+		database.o \
 		logindialog.o \
 		main.o \
 		mainwindow.o \
 		registerdialog.o \
-		server.o \
-		serverthread.o \
+		moc_client.o \
 		moc_logindialog.o \
 		moc_mainwindow.o \
-		moc_registerdialog.o \
-		moc_serverthread.o
-DIST          = /usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/spec_pre.prf \
+		moc_registerdialog.o
+DIST          = ../../.gitignore \
+		/usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt6/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt6/mkspecs/common/linux.conf \
 		/usr/lib/x86_64-linux-gnu/qt6/mkspecs/common/sanitize.conf \
@@ -138,18 +137,16 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/exceptions.prf \
 		/usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/lex.prf \
-		../../../../Messenger.pro ../../database.h \
+		../../../../Messenger.pro ../../client.h \
+		../../database.h \
 		../../logindialog.h \
 		../../mainwindow.h \
-		../../registerdialog.h \
-		../../server.h \
-		../../serverthread.h ../../database.cpp \
+		../../registerdialog.h ../../client.cpp \
+		../../database.cpp \
 		../../logindialog.cpp \
 		../../main.cpp \
 		../../mainwindow.cpp \
-		../../registerdialog.cpp \
-		../../server.cpp \
-		../../serverthread.cpp
+		../../registerdialog.cpp
 QMAKE_TARGET  = Messenger
 DESTDIR       = 
 TARGET        = Messenger
@@ -230,6 +227,7 @@ Makefile: ../../Messenger.pro /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-clang/
 		/usr/lib/x86_64-linux-gnu/libQt6Widgets.prl \
 		/usr/lib/x86_64-linux-gnu/libQt6Gui.prl \
 		/usr/lib/x86_64-linux-gnu/libQt6Sql.prl \
+		/usr/lib/x86_64-linux-gnu/libQt6Network.prl \
 		/usr/lib/x86_64-linux-gnu/libQt6Core.prl
 	$(QMAKE) -o Makefile ../../Messenger.pro -spec linux-clang CONFIG+=debug CONFIG+=qml_debug
 /usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/spec_pre.prf:
@@ -301,6 +299,7 @@ Makefile: ../../Messenger.pro /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-clang/
 /usr/lib/x86_64-linux-gnu/libQt6Widgets.prl:
 /usr/lib/x86_64-linux-gnu/libQt6Gui.prl:
 /usr/lib/x86_64-linux-gnu/libQt6Sql.prl:
+/usr/lib/x86_64-linux-gnu/libQt6Network.prl:
 /usr/lib/x86_64-linux-gnu/libQt6Core.prl:
 qmake: FORCE
 	@$(QMAKE) -o Makefile ../../Messenger.pro -spec linux-clang CONFIG+=debug CONFIG+=qml_debug
@@ -317,8 +316,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../../database.h ../../logindialog.h ../../mainwindow.h ../../registerdialog.h ../../server.h ../../serverthread.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../../database.cpp ../../logindialog.cpp ../../main.cpp ../../mainwindow.cpp ../../registerdialog.cpp ../../server.cpp ../../serverthread.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../../client.h ../../database.h ../../logindialog.h ../../mainwindow.h ../../registerdialog.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../../client.cpp ../../database.cpp ../../logindialog.cpp ../../main.cpp ../../mainwindow.cpp ../../registerdialog.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../../logindialog.ui ../../mainwindow.ui ../../registerdialog.ui $(DISTDIR)/
 
 
@@ -351,31 +350,28 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/data/dummy.cpp
 	clang++ -pipe -g -g -std=gnu++1z -Wall -Wextra -fPIC -dM -E -o moc_predefs.h /usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_logindialog.cpp moc_mainwindow.cpp moc_registerdialog.cpp moc_serverthread.cpp
+compiler_moc_header_make_all: moc_client.cpp moc_logindialog.cpp moc_mainwindow.cpp moc_registerdialog.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_logindialog.cpp moc_mainwindow.cpp moc_registerdialog.cpp moc_serverthread.cpp
+	-$(DEL_FILE) moc_client.cpp moc_logindialog.cpp moc_mainwindow.cpp moc_registerdialog.cpp
+moc_client.cpp: ../../client.h \
+		moc_predefs.h \
+		/usr/lib/qt6/libexec/moc
+	/usr/lib/qt6/libexec/moc $(DEFINES) --include '/home/jwin/Рабочий стол/qt/Messenger/build/Desktop-Debug/moc_predefs.h' -I/usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-clang -I'/home/jwin/Рабочий стол/qt/Messenger' -I/usr/include -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtWidgets -I/usr/include/x86_64-linux-gnu/qt6/QtGui -I/usr/include/x86_64-linux-gnu/qt6/QtSql -I/usr/include/x86_64-linux-gnu/qt6/QtNetwork -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I. -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/llvm-18/lib/clang/18/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../client.h -o moc_client.cpp
+
 moc_logindialog.cpp: ../../logindialog.h \
 		moc_predefs.h \
 		/usr/lib/qt6/libexec/moc
-	/usr/lib/qt6/libexec/moc $(DEFINES) --include '/home/jwin/Рабочий стол/qt/Messenger/build/Desktop-Debug/moc_predefs.h' -I/usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-clang -I'/home/jwin/Рабочий стол/qt/Messenger' -I/usr/include -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtWidgets -I/usr/include/x86_64-linux-gnu/qt6/QtGui -I/usr/include/x86_64-linux-gnu/qt6/QtSql -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I. -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/llvm-18/lib/clang/18/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../logindialog.h -o moc_logindialog.cpp
+	/usr/lib/qt6/libexec/moc $(DEFINES) --include '/home/jwin/Рабочий стол/qt/Messenger/build/Desktop-Debug/moc_predefs.h' -I/usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-clang -I'/home/jwin/Рабочий стол/qt/Messenger' -I/usr/include -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtWidgets -I/usr/include/x86_64-linux-gnu/qt6/QtGui -I/usr/include/x86_64-linux-gnu/qt6/QtSql -I/usr/include/x86_64-linux-gnu/qt6/QtNetwork -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I. -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/llvm-18/lib/clang/18/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../logindialog.h -o moc_logindialog.cpp
 
 moc_mainwindow.cpp: ../../mainwindow.h \
-		../../serverthread.h \
-		../../server.h \
 		moc_predefs.h \
 		/usr/lib/qt6/libexec/moc
-	/usr/lib/qt6/libexec/moc $(DEFINES) --include '/home/jwin/Рабочий стол/qt/Messenger/build/Desktop-Debug/moc_predefs.h' -I/usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-clang -I'/home/jwin/Рабочий стол/qt/Messenger' -I/usr/include -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtWidgets -I/usr/include/x86_64-linux-gnu/qt6/QtGui -I/usr/include/x86_64-linux-gnu/qt6/QtSql -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I. -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/llvm-18/lib/clang/18/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../mainwindow.h -o moc_mainwindow.cpp
+	/usr/lib/qt6/libexec/moc $(DEFINES) --include '/home/jwin/Рабочий стол/qt/Messenger/build/Desktop-Debug/moc_predefs.h' -I/usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-clang -I'/home/jwin/Рабочий стол/qt/Messenger' -I/usr/include -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtWidgets -I/usr/include/x86_64-linux-gnu/qt6/QtGui -I/usr/include/x86_64-linux-gnu/qt6/QtSql -I/usr/include/x86_64-linux-gnu/qt6/QtNetwork -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I. -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/llvm-18/lib/clang/18/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../mainwindow.h -o moc_mainwindow.cpp
 
 moc_registerdialog.cpp: ../../registerdialog.h \
 		moc_predefs.h \
 		/usr/lib/qt6/libexec/moc
-	/usr/lib/qt6/libexec/moc $(DEFINES) --include '/home/jwin/Рабочий стол/qt/Messenger/build/Desktop-Debug/moc_predefs.h' -I/usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-clang -I'/home/jwin/Рабочий стол/qt/Messenger' -I/usr/include -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtWidgets -I/usr/include/x86_64-linux-gnu/qt6/QtGui -I/usr/include/x86_64-linux-gnu/qt6/QtSql -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I. -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/llvm-18/lib/clang/18/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../registerdialog.h -o moc_registerdialog.cpp
-
-moc_serverthread.cpp: ../../serverthread.h \
-		../../server.h \
-		moc_predefs.h \
-		/usr/lib/qt6/libexec/moc
-	/usr/lib/qt6/libexec/moc $(DEFINES) --include '/home/jwin/Рабочий стол/qt/Messenger/build/Desktop-Debug/moc_predefs.h' -I/usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-clang -I'/home/jwin/Рабочий стол/qt/Messenger' -I/usr/include -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtWidgets -I/usr/include/x86_64-linux-gnu/qt6/QtGui -I/usr/include/x86_64-linux-gnu/qt6/QtSql -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I. -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/llvm-18/lib/clang/18/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../serverthread.h -o moc_serverthread.cpp
+	/usr/lib/qt6/libexec/moc $(DEFINES) --include '/home/jwin/Рабочий стол/qt/Messenger/build/Desktop-Debug/moc_predefs.h' -I/usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-clang -I'/home/jwin/Рабочий стол/qt/Messenger' -I/usr/include -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtWidgets -I/usr/include/x86_64-linux-gnu/qt6/QtGui -I/usr/include/x86_64-linux-gnu/qt6/QtSql -I/usr/include/x86_64-linux-gnu/qt6/QtNetwork -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I. -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/llvm-18/lib/clang/18/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../registerdialog.h -o moc_registerdialog.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -406,6 +402,9 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_ui
 
 ####### Compile
 
+client.o: ../../client.cpp ../../client.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o client.o ../../client.cpp
+
 database.o: ../../database.cpp ../../database.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o database.o ../../database.cpp
 
@@ -416,15 +415,12 @@ logindialog.o: ../../logindialog.cpp ../../logindialog.h \
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o logindialog.o ../../logindialog.cpp
 
 main.o: ../../main.cpp ../../mainwindow.h \
-		../../serverthread.h \
-		../../server.h \
 		../../logindialog.h \
-		../../database.h
+		../../database.h \
+		../../Server.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../../main.cpp
 
 mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
-		../../serverthread.h \
-		../../server.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../../mainwindow.cpp
 
@@ -433,12 +429,8 @@ registerdialog.o: ../../registerdialog.cpp ../../registerdialog.h \
 		../../database.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o registerdialog.o ../../registerdialog.cpp
 
-server.o: ../../server.cpp ../../server.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o server.o ../../server.cpp
-
-serverthread.o: ../../serverthread.cpp ../../serverthread.h \
-		../../server.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o serverthread.o ../../serverthread.cpp
+moc_client.o: moc_client.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_client.o moc_client.cpp
 
 moc_logindialog.o: moc_logindialog.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_logindialog.o moc_logindialog.cpp
@@ -448,9 +440,6 @@ moc_mainwindow.o: moc_mainwindow.cpp
 
 moc_registerdialog.o: moc_registerdialog.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_registerdialog.o moc_registerdialog.cpp
-
-moc_serverthread.o: moc_serverthread.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_serverthread.o moc_serverthread.cpp
 
 ####### Install
 

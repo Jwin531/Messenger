@@ -1,19 +1,12 @@
-#include "serverthread.h"
-#include <csignal>
+// #include "serverthread.h"
 
-ServerThread::ServerThread()
-    : io_context_(), signals_(io_context_), server_(io_context_, 12345) {
-    signals_.add(SIGINT);
-    signals_.async_wait([this](const boost::system::error_code& /*error*/, int /*signal_number*/) {
-        io_context_.stop();
-    });
-}
+// ServerThread::ServerThread(QObject *parent) : QThread(parent) {}
 
-ServerThread::~ServerThread() {
-    quit();
-    wait();
-}
+// void ServerThread::run() {
+//     server = std::make_unique<Server>(io_context, 1234);  // Запуск сервера
+//     io_context.run();  // Выполнение io_context в потоке
+// }
 
-void ServerThread::run() {
-    io_context_.run();
-}
+// void ServerThread::stopServer() {
+//     io_context.stop();  // Остановка сервера
+// }
