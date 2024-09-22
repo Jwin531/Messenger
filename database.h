@@ -1,32 +1,26 @@
 #ifndef DATABASE_H
 #define DATABASE_H
-
-#include <QtSql/QSqlDatabase>
-#include <QtSql/QSqlError>
-#include <QtSql/QSqlQuery>
-#include <QCoreApplication>
+//
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
 #include <QDebug>
-#include <QRandomGenerator>
 #include <QCryptographicHash>
+#include <QRandomGenerator>
 #include <QByteArray>
 
-class Database
-{
+class Database {
 public:
-    static Database& instance();  // Метод для получения единственного экземпляра
-    ~Database();
-
+    static Database& instance();
     bool connectToDatabase();
-    bool getUserData(const QString &username, const QString &password);
     bool setUserData(const QString &username, const QString &password);
-    bool updateUserStatus(const QString &username, const QString status);
+    bool getUserData(const QString &username, const QString &inputPassword);
+    bool updateUserStatus(const QString& username, const QString status);
     bool saveMessage(const QString &username, const QString& message);
 
 private:
-    Database();  // Конструктор в private для предотвращения создания экземпляров
-    Database(const Database&) = delete;  // Запрещаем копирование
-    void operator=(const Database&) = delete;  // Запрещаем присваивание
-
+    Database();
+    ~Database();
     QSqlDatabase db;
 };
 

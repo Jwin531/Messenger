@@ -1,6 +1,6 @@
 #ifndef LOGINDIALOG_H
 #define LOGINDIALOG_H
-
+//
 #include <QDialog>
 #include "client.h"
 
@@ -13,7 +13,7 @@ class LoginDialog : public QDialog {
 
 public:
     explicit LoginDialog(QWidget *parent = nullptr);
-    ~LoginDialog() override;
+    ~LoginDialog();
 
 signals:
     void loginSuccessful(const QString &username);
@@ -21,10 +21,11 @@ signals:
 private slots:
     void onLoginClicked();
     void onRegisterClicked();
+    void handleStatusReceived(const QString &status);
 
 private:
     Ui::LoginDialog *ui;
-    Client* client_;
+    Client *client_;
 };
 
 #endif // LOGINDIALOG_H

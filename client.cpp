@@ -1,21 +1,29 @@
 #include "client.h"
-
-Client::Client(QObject *parent)
-    : QObject(parent), socket_(new QTcpSocket(this)) {
-    connect(socket_, &QTcpSocket::readyRead, this, &Client::onReadyRead);
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QDebug>
+//
+Client::Client(QObject *parent): QObject(parent), socket_(new QTcpSocket(this)) {
+    connect(socket_, &QTcpSocket::readyRead, this, &Client::readMessage);
 }
 
 void Client::connectToServer(const QString &host, quint16 port) {
     socket_->connectToHost(host, port);
 }
 
-void Client::sendMessage(const QString &message) {
-    if (socket_->state() == QAbstractSocket::ConnectedState) {
-        socket_->write(message.toUtf8());
-    }
-}
+void Client::readMessage() {
+    while (socket_->canReadLine()) {
+        QByteArray data = socket_->readLine();
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
 
-void Client::onReadyRead() {
-    QByteArray data = socket_->readAll();
-    // Обработка полученного сообщения
+        if (!jsonDoc.isNull() && jsonDoc.isObject()) {
+            QJsonObject jsonObj = jsonDoc.object();
+            QString status = jsonObj.value("status").toString();
+            qDebug() << "Статус:" << status;
+            emit messageReceived(status);
+        } else {
+            qDebug() << "Неверный формат JSON";
+        }
+    }
 }

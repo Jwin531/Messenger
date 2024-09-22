@@ -47,15 +47,24 @@
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
          <widget class="QLineEdit" name="loginLineEdit">
-          <property name="placeholderText">
+          <property name="text">
            <string/>
+          </property>
+          <property name="placeholderText">
+           <string>Введите логин</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QLineEdit" name="passwordLineEdit">
+          <property name="inputMask">
+           <string/>
+          </property>
           <property name="echoMode">
            <enum>QLineEdit::Password</enum>
+          </property>
+          <property name="placeholderText">
+           <string>Введите пароль</string>
           </property>
          </widget>
         </item>

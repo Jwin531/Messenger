@@ -2,14 +2,12 @@
 #include "logindialog.h"
 #include "database.h"
 #include <QApplication>
-#include <thread>
-#include "Server.h"
-
-int main(int argc, char *argv[])
-{
+#include <QDebug>
+//
+int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
 
-    Database& db = Database::instance();  // Используем singleton экземпляр
+    Database& db = Database::instance();
     if (!db.connectToDatabase()) {
         return -1;
     }
@@ -20,14 +18,11 @@ int main(int argc, char *argv[])
         qDebug() << "Пользователь вошел в систему:" << username;
     });
 
-    if(loginDialog.exec() == QDialog::Accepted)
-    {
+    if (loginDialog.exec() == QDialog::Accepted) {
         MainWindow w;
         w.show();
         return a.exec();
-    }
-    else
-    {
+    } else {
         return 0;
     }
 }
