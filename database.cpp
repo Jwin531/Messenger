@@ -1,5 +1,5 @@
 #include "database.h"
-//
+
 Database::Database() {
     db = QSqlDatabase::addDatabase("QPSQL");
     db.setHostName("localhost");

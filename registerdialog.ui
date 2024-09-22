@@ -62,7 +62,7 @@
         <item>
          <widget class="QLineEdit" name="passwordLineEdit">
           <property name="placeholderText">
-           <string>Введите пароль</string>
+           <string> пароль</string>
           </property>
          </widget>
         </item>

@@ -64,7 +64,7 @@
            <enum>QLineEdit::Password</enum>
           </property>
           <property name="placeholderText">
-           <string>Введите пароль</string>
+           <string/>
           </property>
          </widget>
         </item>

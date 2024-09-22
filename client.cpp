@@ -3,7 +3,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QDebug>
-//
+
 Client::Client(QObject *parent): QObject(parent), socket_(new QTcpSocket(this)) {
     connect(socket_, &QTcpSocket::readyRead, this, &Client::readMessage);
 }

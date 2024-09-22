@@ -2,7 +2,7 @@
 #include "ui_registerdialog.h"
 #include "database.h"
 #include <QMessageBox>
-//
+
 RegisterDialog::RegisterDialog(QWidget *parent)
     : QDialog(parent), ui(new Ui::RegisterDialog) {
     ui->setupUi(this);
