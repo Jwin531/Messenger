@@ -1,29 +1,48 @@
 #include "client.h"
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QJsonArray>
 #include <QDebug>
+#include <QTimer>
 
-Client::Client(QObject *parent): QObject(parent), socket_(new QTcpSocket(this)) {
-    connect(socket_, &QTcpSocket::readyRead, this, &Client::readMessage);
+Client::Client(QObject *parent)
+    : QObject(parent), socket_(new QTcpSocket(this)) {
+    connect(socket_, &QTcpSocket::disconnected, this, []() {
+        qDebug() << "Сокет отключен.";
+    });
+
+    connect(socket_, &QTcpSocket::connected, this, &Client::onConnected);
+
 }
 
-void Client::connectToServer(const QString &host, quint16 port) {
+void Client::connectToServer(const QString &host, int port) {
+    qDebug() << "Попытка подключения к серверу..." << host << ":" << port;
+
     socket_->connectToHost(host, port);
 }
 
-void Client::readMessage() {
-    while (socket_->canReadLine()) {
-        QByteArray data = socket_->readLine();
-        QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
+void Client::onConnected() {
+    QString message = "1234567890";
+    QByteArray messageData = message.toUtf8();
+    qDebug() << "Отправка сообщения на сервер:" << message << "Состояние: " << socket_->state();
 
-        if (!jsonDoc.isNull() && jsonDoc.isObject()) {
-            QJsonObject jsonObj = jsonDoc.object();
-            QString status = jsonObj.value("status").toString();
-            qDebug() << "Статус:" << status;
-            emit messageReceived(status);
-        } else {
-            qDebug() << "Неверный формат JSON";
-        }
+    socket_->write(messageData);
+    socket_->flush();
+}
+
+void Client::sendMessageToServer(const QString &message) {
+    if (socket_->state() == QAbstractSocket::ConnectedState) {
+        QJsonObject jsonMessage;
+        jsonMessage["message"] = message;
+        QJsonDocument jsonDoc(jsonMessage);
+        QByteArray jsonData = jsonDoc.toJson() + "\n";
+
+        qDebug() << "Отправка сообщения на сервер:" << jsonData << "Состояние: " << socket_->state();
+        socket_->write(jsonData);
+        socket_->flush();
+    } else {
+        qDebug() << "Клиент не подключен к серверу! Статус сокета:" << socket_->state();
     }
 }
+
+
+

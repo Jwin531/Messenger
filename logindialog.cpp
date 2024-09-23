@@ -8,7 +8,6 @@
 LoginDialog::LoginDialog(QWidget *parent)
     : QDialog(parent), ui(new Ui::LoginDialog) {
     ui->setupUi(this);
-    client_ = new Client(this);
 
     connect(ui->loginButton, &QPushButton::clicked, this, &LoginDialog::onLoginClicked);
     connect(ui->registerButton, &QPushButton::clicked, this, &LoginDialog::onRegisterClicked);
@@ -34,9 +33,8 @@ void LoginDialog::onLoginClicked() {
     }
 
     if (db.getUserData(login, password)) {
-        emit loginSuccessful(login);  // Добавляем сигнал успешного входа
+        emit loginSuccessful(login);
         accept();
-        client_->connectToServer("127.0.0.1", 1234);
     } else {
         QMessageBox::critical(this, "Ошибка", "Не удалось войти в систему");
     }

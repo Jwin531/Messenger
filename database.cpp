@@ -6,7 +6,7 @@ Database::Database() {
     db.setPort(5432);
     db.setDatabaseName("messenger");
     db.setUserName("postgres");
-    db.setPassword("G41z2pva"); // Рекомендуется не хранить пароли в коде
+    db.setPassword("G41z2pva");
 }
 
 Database::~Database() {

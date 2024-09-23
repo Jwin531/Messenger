@@ -25,7 +25,6 @@ private slots:
 
 private:
     Ui::LoginDialog *ui;
-    Client *client_;
 };
 
 #endif // LOGINDIALOG_H

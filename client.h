@@ -3,20 +3,17 @@
 
 #include <QObject>
 #include <QTcpSocket>
-
+#include <QHostAddress>
 
 class Client : public QObject {
     Q_OBJECT
-
 public:
     explicit Client(QObject *parent = nullptr);
-    void connectToServer(const QString &host, quint16 port);
 
-signals:
-    void messageReceived(const QString &message);
-
+    void connectToServer(const QString &host, int port);
+    void sendMessageToServer(const QString &message);
 private slots:
-    void readMessage();
+    void onConnected();
 
 private:
     QTcpSocket *socket_;
