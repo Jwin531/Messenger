@@ -12,8 +12,9 @@ public:
 
     void connectToServer(const QString &host, int port);
     void sendMessageToServer(const QString &message);
+
 private slots:
-    void onConnected();
+    void readMessageFromServer();
 
 private:
     QTcpSocket *socket_;
