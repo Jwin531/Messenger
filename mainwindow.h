@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include "client.h"
+#include "database.h"
+#include "logindialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -13,6 +15,7 @@ class MainWindow : public QMainWindow {
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
+    void setUsername(const QString& username);
     ~MainWindow();
 signals:
     void messege(const QString& messege);
@@ -24,6 +27,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QString login;
     Client *client_;
 };
 

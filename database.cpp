@@ -162,3 +162,29 @@ bool Database::saveMessage(const QString &username, const QString& message) {
     }
     return true;
 }
+
+bool Database::saveSessionId(const QString& sessionId,const QString& username)
+{
+    QSqlQuery query(db);
+    query.prepare(R"(UPDATE users SET session_id = :sessionId WHERE login = :login)");
+    query.bindValue(":login", username);
+    query.bindValue(":sessionId",sessionId);
+
+    if (!query.exec()) {
+        qDebug() << "Ошибка обнновления id сессии:" << query.lastError();
+        return false;
+    }
+    return true;
+}
+
+bool Database::resetSessionId(const QString& username) {
+    QSqlQuery query(db);
+    query.prepare(R"(UPDATE users SET session_id = NULL WHERE login = :login)");
+    query.bindValue(":login", username);
+
+    if (!query.exec()) {
+        qDebug() << "Ошибка сброса id сессии:" << query.lastError();
+        return false;
+    }
+    return true;
+}

@@ -17,6 +17,8 @@ public:
     bool getUserData(const QString &username, const QString &inputPassword);
     bool updateUserStatus(const QString& username, const QString status);
     bool saveMessage(const QString &username, const QString& message);
+    bool saveSessionId(const QString& sessionId,const QString& username);
+    bool resetSessionId(const QString& username);
 
 private:
     Database();

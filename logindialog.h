@@ -21,7 +21,6 @@ signals:
 private slots:
     void onLoginClicked();
     void onRegisterClicked();
-    void handleStatusReceived(const QString &status);
 
 private:
     Ui::LoginDialog *ui;

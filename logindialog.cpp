@@ -40,9 +40,3 @@ void LoginDialog::onLoginClicked() {
     }
 }
 
-void LoginDialog::handleStatusReceived(const QString &status) {
-    qDebug() << "Получен статус:" << status;
-    Database& db = Database::instance();
-    QString login = ui->loginLineEdit->text();
-    db.updateUserStatus(login, status);
-}
