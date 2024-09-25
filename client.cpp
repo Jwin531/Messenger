@@ -51,6 +51,7 @@ void Client::readMessageFromServer() {
             if (jsonObj.contains("response"))
             {
                 QString serverMessage = jsonObj["response"].toString();
+                emit messageToMain(serverMessage);
                 qDebug() << "Сообщение от сервера:" << serverMessage;
             }
         }

@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     connect(ui->sendMessage, &QPushButton::clicked, this, &MainWindow::onSendMessageClicked);
     connect(ui->SendVoiceMessage, &QPushButton::clicked, this, &MainWindow::onSendVoiceMessageClicked);
+    connect(client_,&Client::messageToMain,this,&MainWindow::messegeFromAnother);
 
     client_->connectToServer("127.0.0.1", 1234);
 }
@@ -29,4 +30,9 @@ void MainWindow::onSendMessageClicked() {
 
 void MainWindow::onSendVoiceMessageClicked() {
     // Логика отправки голосовых сообщений
+}
+
+void MainWindow::messegeFromAnother(const QString& message)
+{
+    ui->textWith->append("He: " + message);
 }

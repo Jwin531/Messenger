@@ -20,6 +20,7 @@ signals:
 private slots:
     void onSendMessageClicked();
     void onSendVoiceMessageClicked();
+    void messegeFromAnother(const QString& message);
 
 private:
     Ui::MainWindow *ui;

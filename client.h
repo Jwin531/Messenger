@@ -13,6 +13,9 @@ public:
     void connectToServer(const QString &host, int port);
     void sendMessageToServer(const QString &message);
 
+signals:
+    void messageToMain(const QString& message);
+
 private slots:
     void readMessageFromServer();
 
