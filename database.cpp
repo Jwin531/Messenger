@@ -49,7 +49,8 @@ bool Database::connectToDatabase() {
         login VARCHAR(30) NOT NULL UNIQUE,
         status VARCHAR(10) NOT NULL DEFAULT 'offline',
         password BYTEA NOT NULL,
-        salt BYTEA NOT NULL
+        salt BYTEA NOT NULL,
+        session_id VARCHAR(255) UNIQUE
     );)";
 
     QString createChatsTable = R"(CREATE TABLE IF NOT EXISTS chats (
