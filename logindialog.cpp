@@ -33,10 +33,8 @@ void LoginDialog::onLoginClicked() {
     }
 
     if (db.getUserData(login, password)) {
-        emit loginSuccessful(login);
         accept();
     } else {
         QMessageBox::critical(this, "Ошибка", "Не удалось войти в систему");
     }
 }
-

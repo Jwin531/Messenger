@@ -15,11 +15,6 @@ int main(int argc, char *argv[]) {
     LoginDialog loginDialog;
     MainWindow w;
 
-    QObject::connect(&loginDialog, &LoginDialog::loginSuccessful, [&w](const QString &username) {
-        qDebug() << "Пользователь вошел в систему:" << username;
-        w.setUsername(username);
-    });
-
     if (loginDialog.exec() == QDialog::Accepted) {
         w.show();
         return a.exec();

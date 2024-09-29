@@ -27,7 +27,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QString login;
+    QString selectedUser;
     Client *client_;
 };
 

@@ -23,7 +23,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow() {
     qDebug() << "Приложение закрыто!";
-
     delete ui;
 }
 
@@ -31,7 +30,7 @@ void MainWindow::onSendMessageClicked() {
     QString message = ui->messageLine->text();
     if (!message.isEmpty()) {
         ui->textWith->append("You: " + message);
-        client_->sendMessageToServer(message);
+        client_->sendMessageToServer(message,1);
         ui->messageLine->clear();
     } else {
         qDebug() << "Сообщение пустое!";
@@ -48,8 +47,6 @@ void MainWindow::messegeFromAnother(const QString &message) {
 
 void MainWindow::setUsername(const QString& username)
 {
-    login = username;
-    qDebug() << "Сохраненный логин: " << login;
     QString sessionId = generatingUniqueSessionID();
-    Database::instance().saveSessionId(sessionId, login);
+    client_->sendMessageToServer(sessionId,2);
 }
