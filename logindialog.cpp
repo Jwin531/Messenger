@@ -13,7 +13,8 @@ LoginDialog::LoginDialog(QWidget *parent)
     connect(ui->registerButton, &QPushButton::clicked, this, &LoginDialog::onRegisterClicked);
 }
 
-LoginDialog::~LoginDialog() {
+LoginDialog::~LoginDialog()
+{
     delete ui;
 }
 
@@ -32,9 +33,13 @@ void LoginDialog::onLoginClicked() {
         return;
     }
 
-    if (db.getUserData(login, password)) {
+    if (db.getUserData(login, password))
+    {
+        emit transLogin(login);
         accept();
-    } else {
+    }
+    else
+    {
         QMessageBox::critical(this, "Ошибка", "Не удалось войти в систему");
     }
 }

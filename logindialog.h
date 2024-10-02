@@ -19,6 +19,8 @@ private slots:
     void onLoginClicked();
     void onRegisterClicked();
 
+signals:
+    void transLogin(const QString& login);
 private:
     Ui::LoginDialog *ui;
 };

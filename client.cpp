@@ -3,101 +3,89 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QDebug>
-#include <QTimer>
+#include <QThread>
 
 Client::Client(QObject *parent)
     : QObject(parent), socket_(new QTcpSocket(this)) {
+    // Подключение сигналов
     connect(socket_, &QTcpSocket::disconnected, this, []() {
         qDebug() << "Сокет отключен.";
     });
-
-    connect(socket_,&QTcpSocket::readyRead,this,&Client::readMessageFromServer);
-
+    connect(socket_, &QTcpSocket::readyRead, this, &Client::readData); // Обработчик для получения данных
 }
 
 void Client::connectToServer(const QString &host, int port) {
     socket_->connectToHost(host, port);
+    if (!socket_->waitForConnected(3000)) {
+        qDebug() << "Не удалось подключиться к серверу:" << socket_->errorString();
+    } else {
+        qDebug() << "Подключено к серверу:" << host << ":" << port;
+    }
 }
 
+void Client::sendLogin(const QString& login) {
+    QJsonObject json;
+    json["login"] = login;
 
-void Client::sendMessageToServer(const QString &message,const short&& messageType) {
-    if (socket_->state() == QAbstractSocket::ConnectedState) {
-        QJsonObject jsonMessage;
-        switch(messageType)
-        {
+    QJsonDocument doc(json);
+    QByteArray data = doc.toJson(QJsonDocument::Compact) + "\n"; // Добавляем перенос строки
+    qDebug() << "Отправляем логин:" << data;
 
-            case 1:
-                jsonMessage["message"] = message;
-                break;
+    socket_->write(data);
+    if (!socket_->waitForBytesWritten(3000)) {
+        qDebug() << "Не удалось отправить данные:" << socket_->errorString();
+    }
+}
 
-            case 2:
-                jsonMessage["sessionId"] = message;
-                break;
+void Client::readData() {
+    // Читаем все доступные строки
+    while (socket_->canReadLine()) {
+        QString line = socket_->readLine().trimmed(); // Удаляем пробелы и переносы
+        processLine(line);
+    }
+}
+
+void Client::processLine(const QString& line) {
+    // Парсим JSON сообщение
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(line.toUtf8()); // Убедимся, что строка в правильном формате
+
+    // Проверяем, что документ корректен
+    if (jsonDoc.isNull()) {
+        qDebug() << "Ошибка парсинга JSON:" << line;
+        return;
+    }
+
+    // Получаем корневой объект
+    QJsonObject jsonObject = jsonDoc.object();
+
+    // Проверяем, содержит ли объект поле "response"
+    if (jsonObject.contains("response")) {
+        QString response = jsonObject["response"].toString();
+
+        // Парсим вложенный JSON
+        QJsonDocument responseDoc = QJsonDocument::fromJson(response.toUtf8());
+        if (responseDoc.isNull()) {
+            qDebug() << "Ошибка парсинга вложенного JSON:" << response;
+            return;
         }
-            QJsonDocument jsonDoc(jsonMessage);
-            QByteArray jsonData = jsonDoc.toJson(QJsonDocument::Compact) + "\n";
 
+        // Обрабатываем вложенный JSON
+        QJsonObject responseObject = responseDoc.object();
 
-            qDebug() << "Отправка сообщения на сервер:" << jsonData << "Состояние: " << socket_->state();
-            socket_->write(jsonData);
-            socket_->flush();
-
-    }
-    else {
-        qDebug() << "Клиент не подключен к серверу! Статус сокета:" << socket_->state();
-    }
-}
-
-void Client::readMessageFromServer() {
-    static QByteArray buffer;
-    buffer.append(socket_->readAll());
-    if (buffer.contains('\n')) {
-        QByteArray jsonData = buffer.left(buffer.indexOf('\n'));
-        buffer.remove(0, buffer.indexOf('\n') + 1);
-
-        QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData);
-        if (!jsonDoc.isNull())
-        {
-            if (jsonDoc.isObject())
-            {
-                // Обработка JSON-объекта
-                QJsonObject jsonObj = jsonDoc.object();
-                for (const QString& key : jsonObj.keys())
-                {
-                    handleJsonKey(key, jsonObj[key].toString());
-                }
-            } else if (jsonDoc.isArray())
-            {
-                // Обработка JSON-массива
-                QJsonArray jsonArray = jsonDoc.array();
-                for (const QJsonValue& value : jsonArray)
-                {
-                    if (value.isObject()) {
-                        QJsonObject jsonObj = value.toObject();
-                        for (const QString& key : jsonObj.keys())
-                        {
-                            handleJsonKey(key, jsonObj[key].toString());
-                        }
-                    }
-                }
+        // Обрабатываем различные типы сообщений
+        if (responseObject.contains("logins")) {
+            QJsonArray loginsArray = responseObject["logins"].toArray();
+            qDebug() << "Активные пользователи:";
+            for (const QJsonValue &value : loginsArray) {
+                qDebug() << value.toString(); // Выводим логины активных пользователей
             }
+        } else if (responseObject.contains("login")) {
+            QString login = responseObject["login"].toString();
+            qDebug() << "Новый пользователь:" << login;
+        } else {
+            qDebug() << "Неизвестный тип сообщения во вложенном JSON:" << response;
         }
-
+    } else {
+        qDebug() << "Неизвестный тип сообщения:" << line;
     }
-}
-
-void Client::handleJsonKey(const QString& key, const QString& value)
-{
-    // Общая обработка для всех ключей
-    //qDebug() << "Ключ:" << key << ", Значение:" << value;
-
-    if(key == "login")
-    {
-        qDebug() << "Полученный логин" << value;
-    }
-    else if (key == "response")
-    {
-        emit messageToMain(value);
-    }
-
 }

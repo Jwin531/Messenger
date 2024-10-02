@@ -24,6 +24,8 @@ private slots:
     void onSendMessageClicked();
     void onSendVoiceMessageClicked();
     void messegeFromAnother(const QString& message);
+public slots:
+    void takeLogin(const QString& login);
 
 private:
     Ui::MainWindow *ui;

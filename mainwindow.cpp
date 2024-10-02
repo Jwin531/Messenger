@@ -2,11 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QDebug>
 #include "QUuid"
-
-QString generatingUniqueSessionID() {
-    QUuid uuid = QUuid::createUuid();
-    return uuid.toString(QUuid::WithoutBraces);
-}
+#include <QTimer>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow),client_(new Client(this)) {
@@ -17,7 +13,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(client_, &Client::messageToMain, this, &MainWindow::messegeFromAnother);
 
     client_->connectToServer("127.0.0.1", 1234);
-
 }
 
 
@@ -30,7 +25,6 @@ void MainWindow::onSendMessageClicked() {
     QString message = ui->messageLine->text();
     if (!message.isEmpty()) {
         ui->textWith->append("You: " + message);
-        client_->sendMessageToServer(message,1);
         ui->messageLine->clear();
     } else {
         qDebug() << "Сообщение пустое!";
@@ -45,8 +39,7 @@ void MainWindow::messegeFromAnother(const QString &message) {
     ui->textWith->append("He: " + message);
 }
 
-void MainWindow::setUsername(const QString& username)
+void MainWindow::takeLogin(const QString& login)
 {
-    QString sessionId = generatingUniqueSessionID();
-    client_->sendMessageToServer(sessionId,2);
+    client_->sendLogin(login);
 }

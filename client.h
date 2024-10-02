@@ -11,14 +11,14 @@ public:
     explicit Client(QObject *parent = nullptr);
 
     void connectToServer(const QString &host, int port);
-    void sendMessageToServer(const QString &message,const short&& messageType);
-    void handleJsonKey(const QString& key, const QString& value);
+
+    void sendLogin(const QString& login);
+
+    void readData();
+    void processLine(const QString& line);
 
 signals:
     void messageToMain(const QString& message);
-
-private slots:
-    void readMessageFromServer();
 
 private:
     QTcpSocket *socket_;
