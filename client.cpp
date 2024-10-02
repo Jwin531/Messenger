@@ -41,51 +41,7 @@ void Client::readData() {
     // Читаем все доступные строки
     while (socket_->canReadLine()) {
         QString line = socket_->readLine().trimmed(); // Удаляем пробелы и переносы
-        processLine(line);
+        emit processLine(line);
     }
 }
 
-void Client::processLine(const QString& line) {
-    // Парсим JSON сообщение
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(line.toUtf8()); // Убедимся, что строка в правильном формате
-
-    // Проверяем, что документ корректен
-    if (jsonDoc.isNull()) {
-        qDebug() << "Ошибка парсинга JSON:" << line;
-        return;
-    }
-
-    // Получаем корневой объект
-    QJsonObject jsonObject = jsonDoc.object();
-
-    // Проверяем, содержит ли объект поле "response"
-    if (jsonObject.contains("response")) {
-        QString response = jsonObject["response"].toString();
-
-        // Парсим вложенный JSON
-        QJsonDocument responseDoc = QJsonDocument::fromJson(response.toUtf8());
-        if (responseDoc.isNull()) {
-            qDebug() << "Ошибка парсинга вложенного JSON:" << response;
-            return;
-        }
-
-        // Обрабатываем вложенный JSON
-        QJsonObject responseObject = responseDoc.object();
-
-        // Обрабатываем различные типы сообщений
-        if (responseObject.contains("logins")) {
-            QJsonArray loginsArray = responseObject["logins"].toArray();
-            qDebug() << "Активные пользователи:";
-            for (const QJsonValue &value : loginsArray) {
-                qDebug() << value.toString(); // Выводим логины активных пользователей
-            }
-        } else if (responseObject.contains("login")) {
-            QString login = responseObject["login"].toString();
-            qDebug() << "Новый пользователь:" << login;
-        } else {
-            qDebug() << "Неизвестный тип сообщения во вложенном JSON:" << response;
-        }
-    } else {
-        qDebug() << "Неизвестный тип сообщения:" << line;
-    }
-}

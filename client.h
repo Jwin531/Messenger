@@ -15,6 +15,8 @@ public:
     void sendLogin(const QString& login);
 
     void readData();
+
+signals:
     void processLine(const QString& line);
 
 signals:
