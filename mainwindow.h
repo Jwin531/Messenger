@@ -25,6 +25,7 @@ private slots:
     void onSendVoiceMessageClicked();
     void messegeFromAnother(const QString& message);
     void takeOnlineUser(const QString& line);
+    void handleUserButtonClick(const QString &login);
 public slots:
     void takeLogin(const QString& login);
 

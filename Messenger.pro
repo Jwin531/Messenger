@@ -11,10 +11,11 @@ CONFIG(debug, debug|release) {
     QMAKE_CXXFLAGS += -g
 }
 
-# You can make your code fail to compile if it uses deprecated APIs.
-# In order to do so, uncomment the following line.
-#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+# Добавляем пути для Redis++ и Hiredis
+INCLUDEPATH += /usr/local/include/sw/redis++ /usr/local/include
+LIBS += -L/usr/local/lib -lredis++ -lhiredis
 
+# Источники и заголовочные файлы
 SOURCES += \
     client.cpp \
     database.cpp \
@@ -35,7 +36,6 @@ FORMS += \
     mainwindow.ui \
     registerdialog.ui
 
-INCLUDEPATH += /usr/include
 LIBS += -L/usr/lib -lboost_system -lboost_filesystem
 
 # Default rules for deployment.

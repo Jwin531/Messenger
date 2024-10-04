@@ -53,18 +53,19 @@ bool Database::connectToDatabase() {
         session_id VARCHAR(255) UNIQUE
     );)";
 
-    QString createChatsTable = R"(CREATE TABLE IF NOT EXISTS chats (
-        chat_id SERIAL PRIMARY KEY,
-        is_group BOOLEAN DEFAULT FALSE,
-        created_at TIMESTAMP DEFAULT NOW()
+    QString messages = R"(CREATE TABLE IF NOT EXISTS messages (
+        id SERIAL PRIMARY KEY,
+        sender_id VARCHAR(30),
+        receiver_id VARCHAR(30),
+        content TEXT NOT NULL,
+        deliver_status BOOLEAN,
+        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );)";
 
-    QString createChatMessagesTable = R"(CREATE TABLE IF NOT EXISTS chat_messages (
-        message_id SERIAL PRIMARY KEY,
-        chat_id INT REFERENCES chats(chat_id) ON DELETE CASCADE,
-        sender_id INT REFERENCES users(user_id) ON DELETE CASCADE,
-        message TEXT,
-        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    QString chats = R"(CREATE TABLE IF NOT EXISTS chats (
+        id SERIAL PRIMARY KEY,
+        user1_id INT REFERENCES users(user_id),
+        user2_id INT REFERENCES users(user_id)
     );)";
 
     if (!query.exec(createUsersTable)) {
@@ -72,12 +73,12 @@ bool Database::connectToDatabase() {
         return false;
     }
 
-    if (!query.exec(createChatsTable)) {
+    if (!query.exec(messages)) {
         qDebug() << "Ошибка создания таблицы chats:" << query.lastError().text();
         return false;
     }
 
-    if (!query.exec(createChatMessagesTable)) {
+    if (!query.exec(chats)) {
         qDebug() << "Ошибка создания таблицы chat_messages:" << query.lastError().text();
         return false;
     }
@@ -188,3 +189,25 @@ bool Database::resetSessionId(const QString& username) {
     }
     return true;
 }
+
+QVector<QString> Database::takeAllMessagesFromThisChat(const QString& receiver, const QString& sender)
+{
+    QVector<QString> messages;
+    QSqlQuery query(db);
+
+    query.prepare(R"(SELECT content FROM messages WHERE sender_id = :sender AND receiver_id = :receiver)");
+    query.bindValue(":receiver", receiver);
+    query.bindValue(":sender", sender);
+
+    if (query.exec()) {
+        while (query.next()) {
+            QString message = query.value(0).toString();
+            messages.append(message);
+        }
+    } else {
+        qDebug() << "Ошибка выполнения запроса:" << query.lastError().text();
+    }
+
+    return messages;
+}
+
