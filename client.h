@@ -21,7 +21,6 @@ public:
     void sendMessage(const QString& message);
 
     void readData();
-
     QString getToLogin(){return toLogin;}
     QString getLogin() {return login_;}
     void setLogin(const QString& login){login_ = login;}
@@ -29,6 +28,8 @@ public:
     void setToLogin(const QString& login){toLogin = login;}
 signals:
     void processLine(const QString& line);
+
+    void messageReceived(const QString &sender, const QString &message, const QString &type);
 
     void messageToMain(const QString& message);
 

@@ -26,6 +26,7 @@ private slots:
     void messegeFromAnother(const QString& message);
     void takeOnlineUser(const QString& line);
     void handleUserButtonClick(const QString &login);
+    void onMessageReceived(const QString &sender, const QString &message, const QString &type);
 public slots:
     void takeLogin(const QString& login);
 

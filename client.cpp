@@ -45,9 +45,37 @@ void Client::readData() {
     // Читаем все доступные строки
     while (socket_->canReadLine()) {
         QString line = socket_->readLine().trimmed(); // Удаляем пробелы и переносы
-        emit processLine(line);
+        emit processLine(line); // Можно оставить, если вам нужно просто обработать строки
+
+        // Разбор строки JSON
+        QJsonDocument doc = QJsonDocument::fromJson(line.toUtf8());
+        if (doc.isNull()) {
+            qDebug() << "Ошибка при разборе JSON:" << line;
+            return; // Если JSON не удалось разобрать, выходим
+        }
+
+        // Извлекаем данные
+        QJsonObject jsonObj = doc.object();
+        QString response = jsonObj["response"].toString();
+
+        // Разбор вложенного JSON в строке response
+        QJsonDocument responseDoc = QJsonDocument::fromJson(response.toUtf8());
+        if (responseDoc.isNull()) {
+            qDebug() << "Ошибка при разборе вложенного JSON:" << response;
+            return; // Если вложенный JSON не удалось разобрать, выходим
+        }
+
+        QJsonObject responseObj = responseDoc.object();
+        QString message = responseObj["message"].toString();
+        QString sender = responseObj["sender"].toString();
+        QString type = responseObj["type"].toString();
+
+        // Обработка сообщения (например, генерируем сигнал)
+        qDebug() << "Получено сообщение от" << sender << ":" << message;
+        emit messageReceived(sender, message, type); // Эмитируем сигнал с данными
     }
 }
+
 
 void Client::sendMessage(const QString &message)
 {

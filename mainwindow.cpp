@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->SendVoiceMessage, &QPushButton::clicked, this, &MainWindow::onSendVoiceMessageClicked);
     connect(client_, &Client::messageToMain, this, &MainWindow::messegeFromAnother);
     connect(client_,&Client::processLine,this,&MainWindow::takeOnlineUser);
+    connect(client_,&Client::messageReceived,this,&MainWindow::onMessageReceived);
 
     ui->textWith->hide();
     ui->sendMessage->hide();
@@ -140,4 +141,9 @@ void MainWindow::handleUserButtonClick(const QString& login)
 
     qDebug() << "Кто отправит: " << client_->getLogin();
     qDebug() << "Кому отправится: " << client_->getToLogin();
+}
+
+void MainWindow::onMessageReceived(const QString &sender, const QString &message, const QString &type)
+{
+    ui->textWith->append(sender+ ": " + message);
 }
