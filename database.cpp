@@ -138,58 +138,6 @@ bool Database::getUserData(const QString &username, const QString &inputPassword
     }
 }
 
-bool Database::updateUserStatus(const QString& username, const QString status) {
-    QSqlQuery query(db);
-    query.prepare(R"(UPDATE users SET status = :status WHERE login = :login)");
-    query.bindValue(":login", username);
-    query.bindValue(":status", status);
-
-    if (!query.exec()) {
-        qDebug() << "Ошибка обновления статуса пользователя:" << username << query.lastError().text();
-        return false;
-    }
-    return true;
-}
-
-bool Database::saveMessage(const QString &username, const QString& message) {
-    QSqlQuery query(db);
-    query.prepare(R"(INSERT INTO chat_messages (sender_id, message) VALUES((SELECT user_id FROM users WHERE login = :username), :message))");
-    query.bindValue(":username", username);
-    query.bindValue(":message", message);
-
-    if (!query.exec()) {
-        qDebug() << "Ошибка при сохранении сообщения:" << query.lastError();
-        return false;
-    }
-    return true;
-}
-
-bool Database::saveSessionId(const QString& sessionId,const QString& username)
-{
-    QSqlQuery query(db);
-    query.prepare(R"(UPDATE users SET session_id = :sessionId WHERE login = :login)");
-    query.bindValue(":login", username);
-    query.bindValue(":sessionId",sessionId);
-
-    if (!query.exec()) {
-        qDebug() << "Ошибка обнновления id сессии:" << query.lastError();
-        return false;
-    }
-    return true;
-}
-
-bool Database::resetSessionId(const QString& username) {
-    QSqlQuery query(db);
-    query.prepare(R"(UPDATE users SET session_id = NULL WHERE login = :login)");
-    query.bindValue(":login", username);
-
-    if (!query.exec()) {
-        qDebug() << "Ошибка сброса id сессии:" << query.lastError();
-        return false;
-    }
-    return true;
-}
-
 QVector<QString> Database::takeAllMessagesFromThisChat(const QString& receiver, const QString& sender)
 {
     QVector<QString> messages;
@@ -211,3 +159,7 @@ QVector<QString> Database::takeAllMessagesFromThisChat(const QString& receiver, 
     return messages;
 }
 
+bool Database::saveMessage(const QString& message, const QString& reciever, const QString& sender)
+{
+    QSqlQuery query;
+}

@@ -16,12 +16,14 @@ MainWindow::MainWindow(QWidget *parent)
     connect(client_, &Client::messageToMain, this, &MainWindow::messegeFromAnother);
     connect(client_,&Client::processLine,this,&MainWindow::takeOnlineUser);
     connect(client_,&Client::messageReceived,this,&MainWindow::onMessageReceived);
+    connect(client_,&Client::disconnectUser,this,&MainWindow::deleteDisconnectUser);
 
     ui->textWith->hide();
     ui->sendMessage->hide();
     ui->SendVoiceMessage->hide();
     ui->messageLine->hide();
     client_->connectToServer("127.0.0.1", 1234);
+    ui->UsersVerticalLayout->addSpacing(5);
 }
 
 
@@ -30,6 +32,25 @@ MainWindow::~MainWindow() {
     delete ui;
 }
 
+void MainWindow::deleteDisconnectUser(const QString& login)
+{
+    for (int i = 0; i < ui->UsersVerticalLayout->count(); ++i) {
+        QLayoutItem* item = ui->UsersVerticalLayout->itemAt(i);
+        if (item) {
+            QWidget* widget = item->widget();
+            if (widget) {
+                QPushButton* button = qobject_cast<QPushButton*>(widget);
+                if (button) {
+                    // Проверка текста кнопки
+                    if (button->text() == login) {
+                        ui->UsersVerticalLayout->removeWidget(button);
+                        button->deleteLater();
+                    }
+                }
+            }
+        }
+    }
+}
 
 
 void MainWindow::onSendMessageClicked() {
@@ -57,8 +78,10 @@ void MainWindow::takeLogin(const QString& login)
 }
 
 void MainWindow::takeOnlineUser(const QString& line) {
+    QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(ui->UsersVerticalLayout);
+
     // Парсим JSON сообщение
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(line.toUtf8()); // Убедимся, что строка в правильном формате
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(line.toUtf8());
 
     // Проверяем, что документ корректен
     if (jsonDoc.isNull()) {
@@ -83,14 +106,14 @@ void MainWindow::takeOnlineUser(const QString& line) {
         // Обрабатываем вложенный JSON
         QJsonObject responseObject = responseDoc.object();
 
-        // Обрабатываем различные типы сообщений
         if (responseObject.contains("logins")) {
+            // Если пришел список пользователей
             QJsonArray loginsArray = responseObject["logins"].toArray();
-            qDebug() << "Активные пользователи:";
-            for (const QJsonValue &value : loginsArray) {
 
+            for (const QJsonValue &value : loginsArray) {
                 QPushButton *loginButton = new QPushButton(value.toString());
-                ui->UsersVerticalLayout->addWidget(loginButton);
+                loginButton->setObjectName(value.toString()); // Устанавливаем имя объекта
+                layout->addWidget(loginButton);
 
                 connect(loginButton, &QPushButton::clicked, this, [=]() {
                     handleUserButtonClick(loginButton->text());
@@ -99,11 +122,12 @@ void MainWindow::takeOnlineUser(const QString& line) {
                 qDebug() << value.toString();
             }
         } else if (responseObject.contains("login")) {
+            // Если добавляется новый пользователь
             QString login = responseObject["login"].toString();
-            qDebug() << "Новый пользователь:" << login;
 
             QPushButton *loginButton = new QPushButton(login);
-            ui->UsersVerticalLayout->addWidget(loginButton);
+            loginButton->setObjectName(login);
+            layout->addWidget(new QPushButton(login));
 
             connect(loginButton, &QPushButton::clicked, this, [=]() {
                 handleUserButtonClick(loginButton->text());
@@ -117,6 +141,7 @@ void MainWindow::takeOnlineUser(const QString& line) {
 }
 
 
+
 void MainWindow::handleUserButtonClick(const QString& login)
 {
     client_->setToLogin(login);
@@ -128,6 +153,7 @@ void MainWindow::handleUserButtonClick(const QString& login)
     ui->SendVoiceMessage->show();
     ui->messageLine->show();
     ui->textWith->clear();
+    ui->chatWithLabel->setText(login);
     if(messages.isEmpty())
     {
         ui->textWith->append("Пустой диалог!");

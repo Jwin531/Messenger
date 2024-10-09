@@ -45,7 +45,6 @@ void Client::readData() {
     // Читаем все доступные строки
     while (socket_->canReadLine()) {
         QString line = socket_->readLine().trimmed(); // Удаляем пробелы и переносы
-        emit processLine(line); // Можно оставить, если вам нужно просто обработать строки
 
         // Разбор строки JSON
         QJsonDocument doc = QJsonDocument::fromJson(line.toUtf8());
@@ -64,15 +63,25 @@ void Client::readData() {
             qDebug() << "Ошибка при разборе вложенного JSON:" << response;
             return; // Если вложенный JSON не удалось разобрать, выходим
         }
-
         QJsonObject responseObj = responseDoc.object();
-        QString message = responseObj["message"].toString();
-        QString sender = responseObj["sender"].toString();
-        QString type = responseObj["type"].toString();
+        if(responseObj["type"] == "user_disconnected")
+        {
+            QString login = responseObj["login"].toString();
+            qDebug() << "Пришел логин дисконекта: " + login;
+            emit disconnectUser(login);
+        }
+        else
+        {
+            emit processLine(line); // Можно оставить, если вам нужно просто обработать строки
 
-        // Обработка сообщения (например, генерируем сигнал)
-        qDebug() << "Получено сообщение от" << sender << ":" << message;
-        emit messageReceived(sender, message, type); // Эмитируем сигнал с данными
+            QString message = responseObj["message"].toString();
+            QString sender = responseObj["sender"].toString();
+            QString type = responseObj["type"].toString();
+
+            // Обработка сообщения (например, генерируем сигнал)
+            qDebug() << "Получено сообщение от" << sender << ":" << message;
+            emit messageReceived(sender, message, type); // Эмитируем сигнал с данными
+        }
     }
 }
 

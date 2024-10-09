@@ -16,11 +16,8 @@ public:
     bool connectToDatabase();
     bool setUserData(const QString &username, const QString &password);
     bool getUserData(const QString &username, const QString &inputPassword);
-    bool updateUserStatus(const QString& username, const QString status);
-    bool saveMessage(const QString &username, const QString& message);
-    bool saveSessionId(const QString& sessionId,const QString& username);
-    bool resetSessionId(const QString& username);
     QVector<QString> takeAllMessagesFromThisChat(const QString& receiver, const QString& sender);
+    bool saveMessage(const QString& message, const QString& reciever, const QString& sender);
 
 
 private:

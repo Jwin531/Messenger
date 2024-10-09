@@ -29,6 +29,8 @@ public:
 signals:
     void processLine(const QString& line);
 
+    void disconnectUser(const QString& login);
+
     void messageReceived(const QString &sender, const QString &message, const QString &type);
 
     void messageToMain(const QString& message);
