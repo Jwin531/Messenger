@@ -143,14 +143,22 @@ QVector<QString> Database::takeAllMessagesFromThisChat(const QString& receiver, 
     QVector<QString> messages;
     QSqlQuery query(db);
 
-    query.prepare(R"(SELECT content FROM messages WHERE sender_id = :sender AND receiver_id = :receiver)");
+    query.prepare(R"(SELECT content, sender_id FROM messages WHERE (sender_id = :sender AND receiver_id = :receiver) OR (sender_id = :receiver AND receiver_id = :sender) ORDER BY timestamp)");
     query.bindValue(":receiver", receiver);
     query.bindValue(":sender", sender);
 
     if (query.exec()) {
         while (query.next()) {
             QString message = query.value(0).toString();
-            messages.append(message);
+            QString messageSender = query.value(1).toString();
+            if(messageSender == sender)
+            {
+                messages.append("Вы: "+message);
+            }
+            else
+            {
+                messages.append(messageSender+": "+message);
+            }
         }
     } else {
         qDebug() << "Ошибка выполнения запроса:" << query.lastError().text();

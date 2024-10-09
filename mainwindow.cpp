@@ -13,7 +13,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->sendMessage, &QPushButton::clicked, this, &MainWindow::onSendMessageClicked);
     connect(ui->SendVoiceMessage, &QPushButton::clicked, this, &MainWindow::onSendVoiceMessageClicked);
-    connect(client_, &Client::messageToMain, this, &MainWindow::messegeFromAnother);
     connect(client_,&Client::processLine,this,&MainWindow::takeOnlineUser);
     connect(client_,&Client::messageReceived,this,&MainWindow::onMessageReceived);
     connect(client_,&Client::disconnectUser,this,&MainWindow::deleteDisconnectUser);
@@ -32,6 +31,7 @@ MainWindow::~MainWindow() {
     delete ui;
 }
 
+// Сигнал удаления отключившегося пользователя
 void MainWindow::deleteDisconnectUser(const QString& login)
 {
     for (int i = 0; i < ui->UsersVerticalLayout->count(); ++i) {
@@ -52,7 +52,7 @@ void MainWindow::deleteDisconnectUser(const QString& login)
     }
 }
 
-
+// Сигнал после нажатия отправки сообщения
 void MainWindow::onSendMessageClicked() {
     QString message = ui->messageLine->text();
     if (!message.isEmpty()) {
@@ -68,17 +68,12 @@ void MainWindow::onSendVoiceMessageClicked() {
     // Логика отправки голосовых сообщений
 }
 
-void MainWindow::messegeFromAnother(const QString &message) {
-    ui->textWith->append("He: " + message);
-}
-
 void MainWindow::takeLogin(const QString& login)
 {
     client_->sendLogin(login);
 }
 
 void MainWindow::takeOnlineUser(const QString& line) {
-    QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(ui->UsersVerticalLayout);
 
     // Парсим JSON сообщение
     QJsonDocument jsonDoc = QJsonDocument::fromJson(line.toUtf8());
@@ -112,8 +107,7 @@ void MainWindow::takeOnlineUser(const QString& line) {
 
             for (const QJsonValue &value : loginsArray) {
                 QPushButton *loginButton = new QPushButton(value.toString());
-                loginButton->setObjectName(value.toString()); // Устанавливаем имя объекта
-                layout->addWidget(loginButton);
+                ui->UsersVerticalLayout->addWidget(loginButton);
 
                 connect(loginButton, &QPushButton::clicked, this, [=]() {
                     handleUserButtonClick(loginButton->text());
@@ -126,8 +120,7 @@ void MainWindow::takeOnlineUser(const QString& line) {
             QString login = responseObject["login"].toString();
 
             QPushButton *loginButton = new QPushButton(login);
-            loginButton->setObjectName(login);
-            layout->addWidget(new QPushButton(login));
+            ui->UsersVerticalLayout->addWidget(loginButton);
 
             connect(loginButton, &QPushButton::clicked, this, [=]() {
                 handleUserButtonClick(loginButton->text());
@@ -146,7 +139,7 @@ void MainWindow::handleUserButtonClick(const QString& login)
 {
     client_->setToLogin(login);
     Database& db = Database::instance();
-    QVector<QString> messages = db.takeAllMessagesFromThisChat("1234","123");
+    QVector<QString> messages = db.takeAllMessagesFromThisChat(client_->getToLogin(),client_->getLogin());
 
     ui->textWith->show();
     ui->sendMessage->show();

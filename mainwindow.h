@@ -23,7 +23,6 @@ signals:
 private slots:
     void onSendMessageClicked();
     void onSendVoiceMessageClicked();
-    void messegeFromAnother(const QString& message);
     void takeOnlineUser(const QString& line);
     void handleUserButtonClick(const QString &login);
     void onMessageReceived(const QString &sender, const QString &message, const QString &type);
