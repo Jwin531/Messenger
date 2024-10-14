@@ -92,6 +92,20 @@ void MainWindow::takeLogin(const QString& login)
     client_->sendLogin(login);
 }
 
+void MainWindow::addUserButton(const QString& login) {
+    QHBoxLayout* layout = new QHBoxLayout();
+    QLabel* label = new QLabel("");
+    QPushButton* loginButton = new QPushButton(login);
+    layout->addWidget(loginButton);
+    layout->addWidget(label);
+    ui->UsersVerticalLayout->addLayout(layout);
+
+    connect(loginButton, &QPushButton::clicked, this, [=]() {
+        handleUserButtonClick(loginButton->text());
+    });
+}
+
+
 void MainWindow::takeOnlineUser(const QString& line) {
 
     // Парсим JSON сообщение
@@ -125,33 +139,13 @@ void MainWindow::takeOnlineUser(const QString& line) {
             QJsonArray loginsArray = responseObject["logins"].toArray();
 
             for (const QJsonValue &value : loginsArray) {
-                QHBoxLayout* layout = new QHBoxLayout();
-                QLabel* label = new QLabel("");
-                QPushButton *loginButton = new QPushButton(value.toString());
-                layout->addWidget(loginButton);
-                layout->addWidget(label);
-                ui->UsersVerticalLayout->addLayout(layout);
-
-                connect(loginButton, &QPushButton::clicked, this, [=]() {
-                    handleUserButtonClick(loginButton->text());
-                });
-
+                addUserButton(value.toString());
                 qDebug() << value.toString();
             }
         } else if (responseObject.contains("login")) {
             // Если добавляется новый пользователь
             QString login = responseObject["login"].toString();
-
-            QHBoxLayout* layout = new QHBoxLayout();
-            QLabel* label = new QLabel("");
-            QPushButton *loginButton = new QPushButton(login);
-            layout->addWidget(loginButton);
-            layout->addWidget(label);
-            ui->UsersVerticalLayout->addLayout(layout);
-
-            connect(loginButton, &QPushButton::clicked, this, [=]() {
-                handleUserButtonClick(loginButton->text());
-            });
+            addUserButton(login);
         } else {
             qDebug() << "Неизвестный тип сообщения во вложенном JSON:" << response;
         }
@@ -175,34 +169,36 @@ void MainWindow::handleUserButtonClick(const QString& login)
     ui->chatWithLabel->setText(login);
 
     // Сброс счетчика сообщений (QLabel), предположим, что QLabel отображает счетчик
-    for (int i = 0; i < ui->UsersVerticalLayout->count(); ++i) {
-        QLayoutItem* item = ui->UsersVerticalLayout->itemAt(i);
-        if (!item) {
-            continue;
-        }
+    QLabel* label = returnLabel(login);
+    label->setText(" ");
+    // for (int i = 0; i < ui->UsersVerticalLayout->count(); ++i) {
+    //     QLayoutItem* item = ui->UsersVerticalLayout->itemAt(i);
+    //     if (!item) {
+    //         continue;
+    //     }
 
-        QLayout* hboxLayout = item->layout();
-        if (hboxLayout) {
-            // Перебираем виджеты внутри QHBoxLayout
-            for (int j = 0; j < hboxLayout->count(); ++j) {
-                QLayoutItem* hboxItem = hboxLayout->itemAt(j);
-                if (!hboxItem) {
-                    continue;
-                }
+    //     QLayout* hboxLayout = item->layout();
+    //     if (hboxLayout) {
+    //         // Перебираем виджеты внутри QHBoxLayout
+    //         for (int j = 0; j < hboxLayout->count(); ++j) {
+    //             QLayoutItem* hboxItem = hboxLayout->itemAt(j);
+    //             if (!hboxItem) {
+    //                 continue;
+    //             }
 
-                // Проверяем, является ли виджет кнопкой
-                QPushButton* button = qobject_cast<QPushButton*>(hboxItem->widget());
-                if (button && button->text() == login) {
-                    // Найдена кнопка, теперь сбрасываем QLabel (счетчик сообщений)
-                    QLabel* label = qobject_cast<QLabel*>(hboxLayout->itemAt(j + 1)->widget());
-                    if (label) {
-                        label->setText(" ");  // Сбрасываем текст метки
-                    }
-                    break;  // Прерываем цикл, так как нашли нужного пользователя
-                }
-            }
-        }
-    }
+    //             // Проверяем, является ли виджет кнопкой
+    //             QPushButton* button = qobject_cast<QPushButton*>(hboxItem->widget());
+    //             if (button && button->text() == login) {
+    //                 // Найдена кнопка, теперь сбрасываем QLabel (счетчик сообщений)
+    //                 QLabel* label = qobject_cast<QLabel*>(hboxLayout->itemAt(j + 1)->widget());
+    //                 if (label) {
+    //                     label->setText(" ");  // Сбрасываем текст метки
+    //                 }
+    //                 break;  // Прерываем цикл, так как нашли нужного пользователя
+    //             }
+    //         }
+    //     }
+    // }
 
     // Отображение сообщений
     if (messages.isEmpty()) {
@@ -228,36 +224,39 @@ void MainWindow::onMessageReceived(const QString &sender, const QString &message
     else
     {
         // Поиск соответствующей кнопки пользователя в списке
-        for (int i = 0; i < ui->UsersVerticalLayout->count(); ++i) {
-            QLayoutItem* item = ui->UsersVerticalLayout->itemAt(i);
-            if (!item) {
-                continue;  // Пропуск, если элемент не существует
-            }
+        QLabel* label = returnLabel(sender);
+        int currentValue = label->text().toInt();
+        label->setText(QString::number(currentValue + 1));
+    }
+}
 
-            QLayout* hboxLayout = item->layout();
-            if (hboxLayout) {
-                // Перебираем виджеты внутри QHBoxLayout
-                for (int j = 0; j < hboxLayout->count(); ++j) {
-                    QLayoutItem* hboxItem = hboxLayout->itemAt(j);
-                    if (!hboxItem) {
-                        continue;
-                    }
+QLabel* MainWindow::returnLabel(const QString &sender)
+{
+    for (int i = 0; i < ui->UsersVerticalLayout->count(); ++i) {
+        QLayoutItem* item = ui->UsersVerticalLayout->itemAt(i);
+        if (!item) {
+            continue;  // Пропуск, если элемент не существует
+        }
 
-                    // Проверяем, является ли виджет кнопкой
-                    QPushButton* button = qobject_cast<QPushButton*>(hboxItem->widget());
-                    if (button && button->text() == sender) {
-                        // Найдена кнопка пользователя, теперь ищем QLabel для увеличения счетчика
-                        QLabel* label = qobject_cast<QLabel*>(hboxLayout->itemAt(j + 1)->widget());
-                        if (label) {
-                            // Извлекаем текущее значение, преобразуем его в число и увеличиваем на 1
-                            int currentValue = label->text().toInt();
-                            label->setText(QString::number(currentValue + 1));
-                        }
-                        return;  // Прекращаем поиск, так как пользователь найден
+        QLayout* hboxLayout = item->layout();
+        if (hboxLayout) {
+            // Перебираем виджеты внутри QHBoxLayout
+            for (int j = 0; j < hboxLayout->count(); ++j) {
+                QLayoutItem* hboxItem = hboxLayout->itemAt(j);
+                if (!hboxItem) {
+                    continue;
+                }
+
+                // Проверяем, является ли виджет кнопкой
+                QPushButton* button = qobject_cast<QPushButton*>(hboxItem->widget());
+                if (button && button->text() == sender) {
+                    // Найдена кнопка пользователя, теперь ищем QLabel для увеличения счетчика
+                    QLabel* label = qobject_cast<QLabel*>(hboxLayout->itemAt(j + 1)->widget());
+                    if (label) {
+                        return label;
                     }
                 }
             }
         }
     }
 }
-

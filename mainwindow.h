@@ -5,6 +5,7 @@
 #include "client.h"
 #include "database.h"
 #include "logindialog.h"
+#include <QLabel>
 
 namespace Ui {
 class MainWindow;
@@ -27,9 +28,11 @@ private slots:
     void onMessageReceived(const QString &sender, const QString &message,const bool& status);
     void deleteDisconnectUser(const QString& login);
 public slots:
+    void addUserButton(const QString& login);
     void takeLogin(const QString& login);
 
 private:
+    QLabel* returnLabel(const QString &sender);
     Ui::MainWindow *ui;
     QString selectedUser;
     Client *client_;
