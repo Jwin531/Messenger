@@ -171,3 +171,21 @@ bool Database::saveMessage(const QString& message, const QString& reciever, cons
 {
     QSqlQuery query;
 }
+
+bool Database::saveChatWith(const QString& sender,const QString& receiver)
+{
+    QSqlQuery query;
+    query.prepare(R"(UPDATE users SET in_chat = :receiver WHERE login = :sender)");
+    query.bindValue(":receiver",receiver);
+    query.bindValue(":sender", sender);
+
+    if(query.exec())
+    {
+        return true;
+    }
+    else
+    {
+        qDebug() << "Ошибка сохранения в поле in_chat: " << query.lastError().text();
+        return false;
+    }
+}

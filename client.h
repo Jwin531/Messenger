@@ -31,7 +31,7 @@ signals:
 
     void disconnectUser(const QString& login);
 
-    void messageReceived(const QString &sender, const QString &message, const QString &type);
+    void messageReceived(const QString &sender, const QString &message, const bool& status);
 
     void messageToMain(const QString& message);
 

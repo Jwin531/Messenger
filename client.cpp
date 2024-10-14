@@ -76,11 +76,12 @@ void Client::readData() {
 
             QString message = responseObj["message"].toString();
             QString sender = responseObj["sender"].toString();
-            QString type = responseObj["type"].toString();
+            // QString type = responseObj["type"].toString();
+            bool status = responseObj["status"].toBool();
 
             // Обработка сообщения (например, генерируем сигнал)
             qDebug() << "Получено сообщение от" << sender << ":" << message;
-            emit messageReceived(sender, message, type); // Эмитируем сигнал с данными
+            emit messageReceived(sender, message,status); // Эмитируем сигнал с данными
         }
     }
 }

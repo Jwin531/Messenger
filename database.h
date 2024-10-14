@@ -18,6 +18,7 @@ public:
     bool getUserData(const QString &username, const QString &inputPassword);
     QVector<QString> takeAllMessagesFromThisChat(const QString& receiver, const QString& sender);
     bool saveMessage(const QString& message, const QString& reciever, const QString& sender);
+    bool saveChatWith(const QString& sender, const QString& receiver);
 
 
 private:

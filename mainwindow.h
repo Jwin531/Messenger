@@ -22,10 +22,9 @@ signals:
 
 private slots:
     void onSendMessageClicked();
-    void onSendVoiceMessageClicked();
     void takeOnlineUser(const QString& line);
     void handleUserButtonClick(const QString &login);
-    void onMessageReceived(const QString &sender, const QString &message, const QString &type);
+    void onMessageReceived(const QString &sender, const QString &message,const bool& status);
     void deleteDisconnectUser(const QString& login);
 public slots:
     void takeLogin(const QString& login);

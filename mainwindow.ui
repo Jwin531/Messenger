@@ -111,13 +111,6 @@
            </property>
           </widget>
          </item>
-         <item>
-          <widget class="QPushButton" name="SendVoiceMessage">
-           <property name="text">
-            <string>🎤</string>
-           </property>
-          </widget>
-         </item>
         </layout>
        </item>
       </layout>
